@@ -153,10 +153,12 @@ const ContentContainer = () => {
                                     )
                             },
                             onFail: (error) => {
-                                toasts.addToast({
-                                    content: error,
-                                    type: "error",
-                                })
+                                if (!eventMsg.data.noToast) {
+                                    toasts.addToast({
+                                        content: error,
+                                        type: "error",
+                                    })
+                                }
                                 console.log(error)
                                 if (!eventMsg.data.noDispatch)
                                     dispatchToExtensions(
@@ -217,10 +219,12 @@ const ContentContainer = () => {
                                     )
                             },
                             onFail: (error) => {
-                                toasts.addToast({
-                                    content: error,
-                                    type: "error",
-                                })
+                                if (!eventMsg.data.noToast) {
+                                    toasts.addToast({
+                                        content: error,
+                                        type: "error",
+                                    })
+                                }
                                 if (!eventMsg.data.noDispatch)
                                     dispatchToExtensions(
                                         "upload",
@@ -265,10 +269,12 @@ const ContentContainer = () => {
                                     )
                             },
                             onFail: (error) => {
-                                toasts.addToast({
-                                    content: error,
-                                    type: "error",
-                                })
+                                if (!eventMsg.data.noToast) {
+                                    toasts.addToast({
+                                        content: error,
+                                        type: "error",
+                                    })
+                                }
                                 if (!eventMsg.data.noDispatch)
                                     dispatchToExtensions(
                                         "download",
