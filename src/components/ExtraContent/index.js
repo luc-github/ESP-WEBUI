@@ -327,7 +327,7 @@ const ExtraContent = ({
     if (target == "page")
         return (
             <div id={"page_"+id} ref={panelRef} style="height: 100%">
-             <ContainerHelper id={"page_"+id} /> 
+                <ContainerHelper id={"page_"+id} /> 
                 <MainContent />
                 <ControlButtons />
             </div>
