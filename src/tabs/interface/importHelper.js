@@ -111,7 +111,7 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                                                 value: true,
                                             },
                                             {
-                                                id: "directsd",
+                                                id: "directsdext",
                                                 value: true,
                                             },
                                             {

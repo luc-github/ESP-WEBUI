@@ -226,15 +226,15 @@
                         "id": "xyfeedrate",
                         "depend": [
                             {
-                                "ids": [
-                                    {
+                                "orGroups": [
+                                    [{
                                         "id": "showx",
                                         "value": true
-                                    },
-                                    {
+                                    }],
+                                    [{
                                         "id": "showy",
                                         "value": true
-                                    }
+                                    }]
                                 ]
                             },
                             {

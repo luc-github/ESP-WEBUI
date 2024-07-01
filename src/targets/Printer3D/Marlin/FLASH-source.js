@@ -73,7 +73,9 @@ const commands = {
     },
     formatResult: (resultTxT) => {
         const res = JSON.parse(resultTxT)
-        res.files = sortedFilesList(res.files)
+        if (useUiContextFn.getValue("sort_flashfs_files")){
+            res.files = sortedFilesList(res.files)
+        } 
         res.status = formatStatus(res.status)
         return res
     },

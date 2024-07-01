@@ -80,7 +80,7 @@ const ContentContainer = () => {
     const { createNewRequest } = useHttpQueue()
     const { toasts, modals } = useUiContext()
     const iconsList = { ...iconsTarget, ...iconsFeather }
-
+    //console.log(JSON.stringify(interfaceSettings.current))
     const processExtensionMessage = (eventMsg) => {
         if (eventMsg.data.type && eventMsg.data.target == "webui") {
             switch (eventMsg.data.type) {

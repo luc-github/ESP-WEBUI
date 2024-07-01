@@ -89,20 +89,23 @@ function disableUI(state = true, ignore) {
 }
 
 const generateDependIds = (depend, settings) => {
-    const dependIds = []
+    const dependIds = [];
     if (Array.isArray(depend)) {
         depend.forEach((d) => {
             if (d.id) {
-                const element = useUiContextFn.getElement(d.id, settings)
-                if (element) dependIds.push(element.value)
+                const element = useUiContextFn.getElement(d.id, settings);
+                if (element) dependIds.push(element.value);
             }
-            if (d.ids) {
-                dependIds.push(...generateDependIds(d.ids, settings))
+            if (d.orGroups) {
+                d.orGroups.forEach(group => {
+                    dependIds.push(...generateDependIds(group, settings));
+                });
             }
-        })
+        });
     }
-    return dependIds
+    return dependIds;
 }
+
 //this won't change as it is initalised with [ESP800] which is call at start
 const connectionDepend = (depend, settings) => {
     if (Array.isArray(depend)) {
@@ -137,52 +140,26 @@ const connectionDepend = (depend, settings) => {
 }
 
 //this is dynamic as it is depending on the preferences settings
-const settingsDepend = (depend, settings, isOr = false) => {
-    if (typeof depend != "undefined") {
-        //console.log("settingsDepend", depend, settings, isOr)
-        //console.log("settingsDepend", depend[0])
-    }
+const settingsDepend = (depend, settings) => {
     if (Array.isArray(depend)) {
-        return depend.reduce(
-            (acc, d) => {
-                if (d.id) {
-                    if (typeof d.value != "undefined") {
-                        const element = useUiContextFn.getElement(
-                            d.id,
-                            settings
-                        )
-                        if (isOr) {
-                            if (element) return acc || element.value === d.value
-                            return acc || false === d.value
-                        } else {
-                            if (element) return acc && element.value === d.value
-                            else return acc && false === d.value
-                        }
-                    } else if (typeof d.notvalue != "undefined") {
-                        const element = useUiContextFn.getElement(
-                            d.id,
-                            settings
-                        )
-                        if (isOr) {
-                            if (element)
-                                return acc || element.value != d.notvalue
-                            return acc || false != d.notvalue
-                        } else {
-                            if (element)
-                                return acc && element.value != d.notvalue
-                            else return acc && false != d.notvalue
-                        }
-                    }
+        return depend.every(d => {
+            if (d.id) {
+                const element = useUiContextFn.getElement(d.id, settings);
+                if (typeof d.value !== "undefined") {
+                    return element ? element.value === d.value : false === d.value;
+                } else if (typeof d.notvalue !== "undefined") {
+                    return element ? element.value !== d.notvalue : false !== d.notvalue;
                 }
-                if (d.ids) {
-                    return acc && settingsDepend(d.ids, settings, true)
-                }
-                return acc
-            },
-            isOr ? false : true
-        )
+            }
+            if (d.orGroups) {
+                return d.orGroups.some(group => 
+                    settingsDepend(group, settings)
+                );
+            }
+            return true;
+        });
     }
-    return true
+    return true;
 }
 
 export {

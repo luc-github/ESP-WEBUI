@@ -396,6 +396,7 @@ const InterfaceTab = () => {
             }
         )
     }
+    //console.log(JSON.stringify(interfaceSettings.current, null, 2))
     return (
         <div id="interface">
             <input

@@ -168,13 +168,28 @@ const commands = {
         const files = result.content.reduce((acc, line) => {
             return formatFileSerialLine(acc, line)
         }, [])
-        res.files = sortedFilesList(files)
+        //res.files = sortedFilesList(files)
+        
+        if (useUiContextFn.getValue("sort_tftsd_files")){
+            res.files = sortedFilesList(files)
+                console.log("sorted")
+        } else {
+            res.files = files
+            console.log("not sorted")
+        } 
+       
         res.status = formatStatus(result.status)
         return res
     },
     filterResult: (data, path) => {
         const res = {}
-        res.files = sortedFilesList(filterResultFiles(data.files, path))
+        if (useUiContextFn.getValue("sort_tftsd_files")){
+            res.files = sortedFilesList(filterResultFiles(data.files, path))
+            console.log("sorted")
+        } else {
+            res.files = filterResultFiles(data.files, path)
+            console.log("not sorted")
+        }
         res.status = formatStatus(data.status)
         return res
     },

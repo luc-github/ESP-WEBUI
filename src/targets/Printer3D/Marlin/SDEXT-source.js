@@ -113,14 +113,15 @@ const commands = {
     },
     formatResult: (result) => {
         const files = formatFileSerialLine(result.content)
+        const isSorted = useUiContextFn.getValue("filessorted")
         return {
-            files: sortedFilesList(files, false),
+            files: isSorted? sortedFilesList(files, false) : files,
             status: formatStatus(result.status),
         }
     },
     filterResult: (data, path) => {
         const res = {}
-        res.files = sortedFilesList(filterResultFiles(data.files, path), false)
+        res.files = isSorted? sortedFilesList(filterResultFiles(data.files, path), false) : data.files
         res.status = formatStatus(data.status)
         return res
     },
