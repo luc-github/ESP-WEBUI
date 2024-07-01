@@ -214,7 +214,21 @@
                         "value": true
                     }
                 ]
-            }
+            },
+        {
+            "id": "default_filesystem",
+            "type": "select",
+            "label": "S223",
+            "value": "flashfs",
+            "options": [
+                { "value": "FLASH", "label": "S137", "depend": [{ "id": "flashfs", "value": true }] },
+                { "value": "SD", "label": "S190" , "depend": [{ "id": "sd", "value": true }, { "connection_id": "SDConnection", "value": "=='none'"}] },
+                { "value": "SDEXT", "label": "S191", "depend": [{ "id": "sdext", "value": true }] },
+                { "value": "TFTSD", "label": "S188", "depend": [{ "id": "tftsd", "value": true }] },
+                { "value": "TFTUSB", "label": "S189", "depend": [{ "id": "tftusb", "value": true }] },
+                { "value": "DIRECTSD", "label": "S190", "depend": [{ "id": "sd", "value": true }, { "connection_id": "SDConnection", "value": "!='none'"}] }
+            ]
+        }
         ],
         "extruders": [
             {

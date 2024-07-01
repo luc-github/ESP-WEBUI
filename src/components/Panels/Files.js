@@ -48,6 +48,7 @@ import { Menu as PanelMenu } from "./"
 let currentFS = ""
 const currentPath = {}
 const filesListCache = {}
+let currentFSNeedInit = true
 
 /*
  * Local const
@@ -55,6 +56,10 @@ const filesListCache = {}
  */
 const FilesPanel = () => {
     const { panels, uisettings } = useUiContext()
+    if (currentFS == "") {
+        currentFS = useUiContextFn.getValue("default_filesystem")
+        if (typeof currentFS === "undefined") currentFS = ""
+    } 
     const id = "filesPanel"
     const [filePath, setFilePath] = useState(currentPath[currentFS])
     const [isLoading, setIsLoading] = useState(false)
@@ -66,8 +71,10 @@ const FilesPanel = () => {
     const { modals, toasts } = useUiContext()
     const fileref = useRef()
     const dropRef = useRef()
-    const progressBar = {}
-
+    const progressBar = {} 
+    console.log("currentFS", currentFS)
+    
+    console.log(currentFS)
     const onCancel = () => {
         useUiContextFn.haptic()
         processor.stopCatchResponse()
@@ -543,6 +550,12 @@ const FilesPanel = () => {
             })
             if (fs) {
                 currentFS = fs.value
+                onSelectFS(null, !useUiContextFn.getValue("autoload"))
+                currentFSNeedInit = false
+            }
+        } else {
+            if (currentFSNeedInit) {
+                currentFSNeedInit = false
                 onSelectFS(null, !useUiContextFn.getValue("autoload"))
             }
         }
