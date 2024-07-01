@@ -168,13 +168,21 @@ const commands = {
         const files = result.content.reduce((acc, line) => {
             return formatFileSerialLine(acc, line)
         }, [])
-        res.files = sortedFilesList(files)
+        if (useUiContextFn.getValue("sort_tftusb_files")){
+            res.files = sortedFilesList(files)
+        } else {
+            res.files = files
+        }  
         res.status = formatStatus(result.status)
         return res
     },
     filterResult: (data, path) => {
         const res = {}
-        res.files = sortedFilesList(filterResultFiles(data.files, path))
+        if (useUiContextFn.getValue("sort_tftusb_files")){
+            res.files = sortedFilesList(filterResultFiles(data.files, path))
+        } else {
+            res.files = filterResultFiles(data.files, path)
+        }  
         res.status = formatStatus(data.status)
         return res
     },

@@ -43,35 +43,17 @@ const supportedFileSystems = [
                 useSettingsContextFn.getValue("SDConnection") != "none"
             )
         },
-    },
-    {
-        value: "TFTSD",
-        name: "S188",
-        depend: () => {
-            return useUiContextFn.getValue("tftsd")
-        },
-    },
-    {
-        value: "TFTUSB",
-        name: "S189",
-        depend: () => {
-            return useUiContextFn.getValue("tftusb")
-        },
-    },
+    }
 ]
 
 const capabilities = {
     FLASH: FLASH.capabilities,
-    DIRECTSD: DIRECTSD.capabilities,
-    TFTUSB: {},
-    TFTSD: {},
+    DIRECTSD: DIRECTSD.capabilities
 }
 
 const commands = {
     FLASH: FLASH.commands,
-    DIRECTSD: DIRECTSD.commands,
-    TFTUSB: {},
-    TFTSD: {},
+    DIRECTSD: DIRECTSD.commands
 }
 
 function capability() {

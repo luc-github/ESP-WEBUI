@@ -172,10 +172,8 @@ const commands = {
         
         if (useUiContextFn.getValue("sort_tftsd_files")){
             res.files = sortedFilesList(files)
-                console.log("sorted")
         } else {
             res.files = files
-            console.log("not sorted")
         } 
        
         res.status = formatStatus(result.status)
@@ -185,10 +183,8 @@ const commands = {
         const res = {}
         if (useUiContextFn.getValue("sort_tftsd_files")){
             res.files = sortedFilesList(filterResultFiles(data.files, path))
-            console.log("sorted")
         } else {
             res.files = filterResultFiles(data.files, path)
-            console.log("not sorted")
         }
         res.status = formatStatus(data.status)
         return res

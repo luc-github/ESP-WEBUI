@@ -32,7 +32,7 @@ const supportedFileSystems = [
                 useUiContextFn.getValue("flashfs") &&
                 useSettingsContextFn.getValue("FlashFileSystem") != "none"
             )
-        },
+        }
     },
     {
         value: "DIRECTSD",
@@ -42,36 +42,20 @@ const supportedFileSystems = [
                 useUiContextFn.getValue("directsd") &&
                 useSettingsContextFn.getValue("SDConnection") != "none"
             )
-        },
-    },
-    {
-        value: "TFTSD",
-        name: "S188",
-        depend: () => {
-            return useUiContextFn.getValue("tftsd")
-        },
-    },
-    {
-        value: "TFTUSB",
-        name: "S189",
-        depend: () => {
-            return useUiContextFn.getValue("tftusb")
-        },
-    },
+        }
+    }
 ]
 
 const capabilities = {
     FLASH: FLASH.capabilities,
     DIRECTSD: DIRECTSD.capabilities,
-    TFTUSB: {},
-    TFTSD: {},
+
 }
 
 const commands = {
     FLASH: FLASH.commands,
     DIRECTSD: DIRECTSD.commands,
-    TFTUSB: {},
-    TFTSD: {},
+
 }
 
 function capability() {

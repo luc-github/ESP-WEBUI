@@ -103,13 +103,21 @@ const commands = {
             if (line.startsWith("echo:")) return acc
             return formatFileSerialLine(acc, line)
         }, [])
+        if (useUiContextFn.getValue("sort_sdext_files")){
         res.files = sortedFilesList(files)
+        } else {
+            res.files = files
+        }
         res.status = formatStatus(result.status)
         return res
     },
     filterResult: (data, path) => {
         const res = {}
+        if (useUiContextFn.getValue("sort_sdext_files")){
         res.files = sortedFilesList(filterResultFiles(data.files, path))
+        } else {
+            res.files = filterResultFiles(data.files, path)
+        }
         res.status = formatStatus(data.status)
         return res
     },

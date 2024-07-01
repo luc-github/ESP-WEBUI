@@ -68,22 +68,90 @@
 
         "files": [
             {
-                "id": "sd",
-                "type": "boolean",
+                "id": "sdgroup",
+                "type": "group",
                 "label": "S190",
-                "value": false,
-                "depend": [{ "connection_id": "SDConnection", "value": "=='shared'" }]
-            },
-            {
-                "id": "sdplaycmd",
-                "type": "text",
-                "label": "P119",
-                "value": "M21;M23 #;M24",
-                "help": "S97",
                 "depend": [
                     {
-                        "id": "sd",
+                        "id": "showfilespanel",
                         "value": true
+                    }
+                ],
+                "value": [
+                    {
+                        "id": "sd",
+                        "type": "boolean",
+                        "label": "S63",
+                        "value": false,
+                        "depend": [{ "connection_id": "SDConnection", "value": "=='shared'" }]
+                    },
+                    {
+                        "id": "sdplaycmd",
+                        "type": "text",
+                        "label": "P119",
+                        "value": "M21;M23 #;M24",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "sd",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sort_sd_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "sd", "value": true }]
+                    }
+                ]
+            },
+            {
+                "id": "default_filesystem",
+                "type": "select",
+                "label": "S223",
+                "value": "FLASH",
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    },
+                    {
+                        
+                        "orGroups": [
+                            [
+                                {
+                                    "id": "sd",
+                                    "value": true
+                                }
+                            ],
+                            [
+                                {
+                                    "id": "flashfs",
+                                    "value": true
+                                }
+                            ]
+                        ]
+                    }
+                ],
+                "options": [
+                    { "value": "FLASH", "label": "S137", "depend": [{ "id": "flashfs", "value": true }] },
+                    {
+                        "value": "SD",
+                        "label": "S190",
+                        "depend": [
+                            { "id": "sd", "value": true },
+                            { "connection_id": "SDConnection", "value": "=='none'" }
+                        ]
+                    },
+                    {
+                        "value": "DIRECTSD",
+                        "label": "S190",
+                        "depend": [
+                            { "id": "sd", "value": true },
+                            { "connection_id": "SDConnection", "value": "!='none'" }
+                        ]
                     }
                 ]
             }

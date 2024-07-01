@@ -73,22 +73,101 @@
                 "id": "filesfilter",
                 "type": "text",
                 "label": "S96",
-                "value": "g;G;gco;GCO;gcode;GCODE;nc;txt",
-                "help": "S97"
+                "value": "g;G;gco;GCO;gcode;GCODE;nc;txt;cnc;ngc",
+                "help": "S97",
+                "depend": [{ "id": "showfilespanel", "value": true }]
             },
             {
-                "id": "flashfs",
-                "type": "boolean",
-                "depend": [{ "connection_id": "FlashFileSystem", "value": "!='none'" }],
+                "id": "flashfsgroup",
+                "type": "group",
                 "label": "S137",
-                "value": true
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    },
+                    { "connection_id": "FlashFileSystem", "value": "!='none'" }
+                ],
+                "value": [
+                    {
+                        "id": "flashfs",
+                        "type": "boolean",
+                        "label": "S63",
+                        "value": true
+                    },
+                    {
+                        "id": "sort_flashfs_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "flashfs", "value": true }]
+                    }
+                ]
             },
             {
-                "id": "directsd",
-                "type": "boolean",
-                "depend": [{ "connection_id": "SDConnection", "value": "!='none'" }],
+                "id": "sdfsgroup",
+                "type": "group",
                 "label": "S190",
-                "value": true
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    },
+                    { "connection_id": "SDConnection", "value": "!='none'" }
+                ],
+                "value": [
+                    {
+                        "id": "directsd",
+                        "type": "boolean",
+                        "depend": [{ "connection_id": "SDConnection", "value": "!='none'" }],
+                        "label": "S63",
+                        "value": true
+                    },
+                    {
+                        "id": "sort_sd_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "directsd", "value": true }]
+                    }
+                    
+                ]
+            },
+            {
+                "id": "default_filesystem",
+                "type": "select",
+                "label": "S223",
+                "value": "FLASH",
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    },
+                    {
+                        "orGroups": [
+                            [{
+                                "id": "sd",
+                                "value": true
+                            }],
+                            [{
+                                "id": "flashfs",
+                                "value": true
+                            }]
+                        ]
+                    }
+                ],
+                "options": [
+                    { "value": "FLASH", "label": "S137", "depend": [{ "id": "flashfs", "value": true }] },
+                   
+                    {
+                        "value": "DIRECTSD",
+                        "label": "S190",
+                        "depend": [
+                            { "id": "directsd", "value": true },
+                            { "connection_id": "SDConnection", "value": "!='none'" }
+                        ]
+                    }
+                ]
             }
         ],
         "jog": [

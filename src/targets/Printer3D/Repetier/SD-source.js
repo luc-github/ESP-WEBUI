@@ -89,13 +89,15 @@ const commands = {
         const files = result.content.reduce((acc, line) => {
             return formatFileSerialLine(acc, line)
         }, [])
-        res.files = sortedFilesList(files)
+        const isSorted = useUiContextFn.getValue("sort_sd_files")
+        res.files = isSorted?sortedFilesList(files): files
         res.status = formatStatus(result.status)
         return res
     },
     filterResult: (data, path) => {
         const res = {}
-        res.files = sortedFilesList(filterResultFiles(data.files, path))
+        const isSorted = useUiContextFn.getValue("sort_sd_files")
+        res.files = isSorted?sortedFilesList(filterResultFiles(data.files, path)): filterResultFiles(data.files, path)
         res.status = formatStatus(data.status)
         return res
     },

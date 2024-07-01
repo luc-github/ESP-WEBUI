@@ -19,7 +19,7 @@
 */
 import { h } from "preact"
 import { sortedFilesList, formatStatus } from "../components/Helpers"
-import { useSettingsContextFn } from "../contexts"
+import { useSettingsContextFn, useUiContextFn } from "../contexts"
 const capabilities = {
     Process: () => false,
     UseFilters: () => false,
@@ -67,7 +67,9 @@ const commands = {
     },
     formatResult: (resultTxT) => {
         const res = JSON.parse(resultTxT)
-        res.files = sortedFilesList(res.files)
+        if (useUiContextFn.getValue("sort_flashfs_files")){
+            res.files = sortedFilesList(res.files)
+        } 
         res.status = formatStatus(res.status)
         return res
     },

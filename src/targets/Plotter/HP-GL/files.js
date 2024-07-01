@@ -50,28 +50,17 @@ const supportedFileSystems = [
         depend: () => {
             return useUiContextFn.getValue("tftsd")
         },
-    },
-    {
-        value: "TFTUSB",
-        name: "S189",
-        depend: () => {
-            return useUiContextFn.getValue("tftusb")
-        },
-    },
+    }
 ]
 
 const capabilities = {
     FLASH: FLASH.capabilities,
     DIRECTSD: DIRECTSD.capabilities,
-    TFTUSB: {},
-    TFTSD: {},
 }
 
 const commands = {
     FLASH: FLASH.commands,
     DIRECTSD: DIRECTSD.commands,
-    TFTUSB: {},
-    TFTSD: {},
 }
 
 function capability() {

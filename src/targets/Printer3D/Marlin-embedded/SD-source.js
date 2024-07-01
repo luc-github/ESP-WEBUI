@@ -90,14 +90,16 @@ const commands = {
     },
     formatResult: (result) => {
         const files = formatFileSerialLine(result.content)
+        const isSorted = useUiContextFn.getValue("sort_sd_files")
         return {
-            files: sortedFilesList(files),
+            files: isSorted? sortedFilesList(files, false) : files,
             status: formatStatus(result.status),
         }
     },
     filterResult: (data, path) => {
+        const isSorted = useUiContextFn.getValue("sort_sd_files")
         const res = {}
-        res.files = sortedFilesList(filterResultFiles(data.files, path))
+        res.files = isSorted? sortedFilesList(filterResultFiles(data.files, path), false) : filterResultFiles(data.files, path)
         res.status = formatStatus(data.status)
         return res
     },

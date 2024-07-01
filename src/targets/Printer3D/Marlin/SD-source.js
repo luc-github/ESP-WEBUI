@@ -123,7 +123,7 @@ const commands = {
         //console.log(data)
         const isSorted = useUiContextFn.getValue("sort_sd_files")
         const res = {}
-        res.files = idSorted? sortedFilesList(filterResultFiles(data.files, path), false) : filterResultFiles(data.files, path)
+        res.files = isSorted? sortedFilesList(filterResultFiles(data.files, path), false) : filterResultFiles(data.files, path)
         res.status = formatStatus(data.status)
         return res
     },

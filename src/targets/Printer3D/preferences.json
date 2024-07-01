@@ -256,6 +256,12 @@
                 "id": "flashfsgroup",
                 "type": "group",
                 "label": "S137",
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    }
+                ],
                 "value": [
                     {
                         "id": "flashfs",

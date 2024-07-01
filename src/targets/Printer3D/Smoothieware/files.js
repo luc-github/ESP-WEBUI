@@ -65,7 +65,7 @@ const supportedFileSystems = [
         depend: () => {
             return (
                 useUiContextFn.getValue("sdext") &&
-                !useUiContextFn.getValue("is_extra_sd_direct")
+                !useUiContextFn.getValue("is_extra_sd_direct") 
             )
         },
     },
@@ -83,14 +83,14 @@ const supportedFileSystems = [
         value: "TFTSD",
         name: "S188",
         depend: () => {
-            return useUiContextFn.getValue("tftsd")
+            return useUiContextFn.getValue("tftsd") && useUiContextFn.getValue("tftfs") != "none"
         },
     },
     {
         value: "TFTUSB",
         name: "S189",
         depend: () => {
-            return useUiContextFn.getValue("tftusb")
+            return useUiContextFn.getValue("tftusb") && useUiContextFn.getValue("tftfs") != "none"
         },
     },
 ]
