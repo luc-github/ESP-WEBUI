@@ -55,10 +55,18 @@ let currentFSNeedInit = true
  *
  */
 const FilesPanel = () => {
-    const { panels, uisettings } = useUiContext()
+
+    const valids = files.supported.reduce((acc, element) => {
+        if (element.depend)
+            if (element.depend())
+                {
+                    acc.push(element.value)
+                }
+        return acc
+    },[])
     if (currentFS == "") {
         currentFS = useUiContextFn.getValue("default_filesystem")
-        if (typeof currentFS === "undefined") currentFS = ""
+        if (typeof currentFS === "undefined" || !valids.includes(currentFS)) currentFS = ""
     } 
     const id = "filesPanel"
     const [filePath, setFilePath] = useState(currentPath[currentFS])
@@ -72,9 +80,8 @@ const FilesPanel = () => {
     const fileref = useRef()
     const dropRef = useRef()
     const progressBar = {} 
-    console.log("currentFS", currentFS)
-    
-    console.log(currentFS)
+    //console.log("currentFS", currentFS)
+    //console.log(currentFS)
     const onCancel = () => {
         useUiContextFn.haptic()
         processor.stopCatchResponse()

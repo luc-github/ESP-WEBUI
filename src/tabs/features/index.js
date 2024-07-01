@@ -422,7 +422,7 @@ const FeaturesTab = () => {
         }
     }, [])
     console.log("feature")
-    console.log(featuresSettings.current)
+    //console.log(featuresSettings.current)
     return (
         <div id="features">
             <input
