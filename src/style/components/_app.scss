@@ -109,3 +109,19 @@ body {
 .modal-container {
     max-height: 95vh;
 }
+
+.page_extra {
+    height: 100%;
+    display: flex;
+    flex-direction: column; 
+}
+.extra-content-container {
+    height: 100%;
+    width: 100%;
+    position:absolute;
+    background-color: red!important;
+    color: white!important;
+    border: 1px solid red!important;
+    z-index: 99999;
+    opacity: 1;
+}

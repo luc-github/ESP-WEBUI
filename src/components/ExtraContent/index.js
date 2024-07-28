@@ -17,12 +17,10 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { Fragment, h } from "preact"
-import { useRef, useEffect, useState } from "preact/hooks"
-import { espHttpURL } from "../Helpers"
-import { useUiContextFn } from "../../contexts"
-import { useHttpFn } from "../../hooks"
-import { Play, Pause, Aperture, RefreshCcw } from "preact-feather"
+import { h, Fragment } from "preact"
+import { useRef, useEffect, useCallback, useState } from "preact/hooks"
+import { elementsCache } from "../../areas/elementsCache"
+import { ExtraContentItem } from "./extraContentItem"
 import {
     ButtonImg,
     FullScreenButton,
@@ -30,361 +28,145 @@ import {
     ContainerHelper,
 } from "../Controls"
 import { T } from "../Translations"
+import { RefreshCcw } from "preact-feather"
 import { iconsFeather } from "../Images"
 import { iconsTarget } from "../../targets"
+import { useUiContextFn } from "../../contexts"
 
-const contentCache = {}
-const refreshPausedList = {}
-const timerIDs = {}
-
-const ExtraContent = ({
-    id,
-    source,
-    refreshtime,
-    label,
-    type,
-    target,
-    icon,
-}) => {
-    const { createNewRequest } = useHttpFn
-    const [refreshPaused, setRefreshPaused] = useState(refreshPausedList[id])
+const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) => {
+    const containerRef = useRef(null)
     const [isFullScreen, setIsFullScreen] = useState(false)
-    const element = useRef(null)
-    const imageCache = useRef(null)
-    const panelRef = useRef(null)
-    const pageSource = type == "camera" ? "/snap" : source
+    const extra_content_id = `extra_content_${id}`
+    const target_id = `target_${id}`
     const iconsList = { ...iconsTarget, ...iconsFeather }
+   console.log(id)
+    const updateContentPosition = () => {
+        if (containerRef.current) {
+            const { top, left, width, height } = containerRef.current.getBoundingClientRect()
+            //console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
+            elementsCache.updatePosition(extra_content_id, { top, left, width, height })
+        } else {
+            //console.log("Element " + extra_content_id + " doesn't exist")
+        }
+    }
+    updateContentPosition()
     useEffect(() => {
-        const handleFullScreenChange = () => {
-            setIsFullScreen(document.fullscreenElement !== null)
+        if (!elementsCache.has(extra_content_id)) {
+            console.log("Creating element " + extra_content_id," because it doesn't exist")
+            elementsCache.create(extra_content_id, { 
+                id, 
+                source, 
+                type, 
+                label, 
+                target, 
+                refreshtime, 
+                icon,
+                isVisible: true
+            })
+        } else {
+            console.log("Updating element " + extra_content_id + " because it already exists")
+            elementsCache.updateState(extra_content_id, { isVisible: true})
         }
 
-        document.addEventListener("fullscreenchange", handleFullScreenChange)
+        updateContentPosition()
+
+        const handleScrollAndResize = () => requestAnimationFrame(updateContentPosition)
+     
+       const main = document.getElementById("main")
+       if (main) {
+            main.addEventListener('scroll', handleScrollAndResize)
+            main.addEventListener('resize', handleScrollAndResize)
+       }
+       window.addEventListener('resize', handleScrollAndResize)
+   
 
         return () => {
-            document.removeEventListener(
-                "fullscreenchange",
-                handleFullScreenChange
-            )
+            const main = document.getElementById("main")
+            if (main) {
+                main.removeEventListener('scroll', handleScrollAndResize)
+                main.removeEventListener('resize', handleScrollAndResize)
+           }
+            window.removeEventListener('resize', handleScrollAndResize)
+            console.log("Hiding element " + extra_content_id)
+            //elementsCache.updateState(extra_content_id, { isVisible: false })
         }
     }, [])
-    const loadContent = (init = false) => {
-        if (!init && refreshPausedList[id]) {
-            return
-        }
-        if (pageSource.startsWith("http")) {
-            switch (type) {
-                case "image":
-                    if (element.current) element.current.src = pageSource
-                    break
-                default:
-                    if (element.current) element.current.src = pageSource
-            }
-        } else {
-            if (
-                (type == "image" || type == "extension") &&
-                contentCache[id] != undefined
-            ) {
-                element.current.classList.remove("d-block")
-                element.current.classList.add("d-none")
-                element.current.onload = () => {
-                    URL.revokeObjectURL(element.current.src)
-                    if (type == "extension") {
-                        const doc = element.current.contentWindow.document
-                        const body = doc.querySelector("body")
-                        body.classList.add("body-extension")
-                        const css = document.querySelectorAll("style")
-                        //inject css
-                        css.forEach((csstag) => {
-                            doc.head.appendChild(csstag.cloneNode(true))
-                        }) //to avoid the flickering when apply css
-                    }
-                    element.current.classList.remove("d-none")
-                    element.current.classList.add("d-block")
-                }
-                element.current.src = URL.createObjectURL(contentCache[id])
-            } else {
-                const idquery = type == "content" ? type + id : "download" + id
-                createNewRequest(
-                    espHttpURL(pageSource),
-                    { method: "GET", id: idquery, max: 2 },
-                    {
-                        onSuccess: (result) => {
-                            switch (type) {
-                                case "camera":
-                                case "image":
-                                    if (element.current) {
-                                        imageCache.current = result
-                                        element.current.onload = () => {
-                                            URL.revokeObjectURL(
-                                                element.current.src
-                                            )
-                                        }
-                                        contentCache[id] = result
-                                        element.current.src =
-                                            URL.createObjectURL(
-                                                contentCache[id]
-                                            )
-                                    }
-                                    break
-                                //cannot be used because this way disable javascript in iframe
-                                case "extension":
-                                    element.current.onload = () => {
-                                        URL.revokeObjectURL(element.current.src)
-                                        const doc =
-                                            element.current.contentWindow
-                                                .document
-                                        const body = doc.querySelector("body")
-                                        body.classList.add("body-extension")
-                                        const css =
-                                            document.querySelectorAll("style")
-                                        //inject css
-                                        css.forEach((csstag) => {
-                                            doc.head.appendChild(
-                                                csstag.cloneNode(true)
-                                            )
-                                        })
-                                        //to avoid the flickering when apply css
-                                        element.current.classList.remove(
-                                            "d-none"
-                                        )
-                                        element.current.classList.add("d-block")
-                                    }
-                                    contentCache[id] = result
-                                    element.current.src = URL.createObjectURL(
-                                        contentCache[id]
-                                    )
-                                    //todo inject css
-                                    break
-                                default:
-                                    if (
-                                        element.current &&
-                                        element.current.contentWindow
-                                    )
-                                        element.current.contentWindow.document.body.innerHTML =
-                                            result
-                            }
-                        },
-                        onFail: (error) => {
-                            const errorContent =
-                                "<div style='display: flex; justify-content: center; align-items: center; height: 100%; font-family: Arial, sans-serif;'><p>" +
-                                T("S222") +
-                                pageSource +
-                                "</p></div>"
-                            element.current.contentWindow.document.body.innerHTML =
-                                errorContent
-                        },
-                    }
-                )
-            }
-        }
+
+
+    const handleRefresh = () => {
+        useUiContextFn.haptic()
+        console.log("Refreshing element " + extra_content_id)
+        elementsCache.updateState(extra_content_id, { forceRefresh: true })
     }
-    const ControlButtons = () => {
+
+    const handleFullScreen = () => {
+        setIsFullScreen(!isFullScreen)
+        console.log("Toggling fullscreen for element " + extra_content_id)
+        elementsCache.updateState(extra_content_id, { isFullScreen: !isFullScreen })
+    }
+
+    const renderControls = () => (
+        <div class="m-2 image-button-bar">
+            <ButtonImg
+                xs
+                m1
+                nomin="yes"
+                icon={<RefreshCcw size="0.8rem" />}
+                onclick={handleRefresh}
+            />
+            <span class="full-height">
+                <FullScreenButton
+                    panelId={extra_content_id}
+                    onclick={handleFullScreen}
+                />
+                <CloseButton
+                    panelRef={containerRef}
+                    panelId={id}
+                    callbackfn={() => elementsCache.updateState(extra_content_id, { isVisible: false })}
+                />
+            </span>
+        </div>
+    )
+
+    if (target === "page") {
+        console.log("Rendering page element " + extra_content_id)
         return (
-            <div class="m-2 image-button-bar">
-                {parseInt(refreshtime) == 0 && target == "page" && (
-                    <ButtonImg
-                        m1
-                        icon={<RefreshCcw size="0.8rem" />}
-                        onclick={() => {
-                            loadContent()
-                        }}
-                    />
-                )}
-                {parseInt(refreshtime) > 0 && type != "extension" && (
-                    <Fragment>
-                        <ButtonImg
-                            m1
-                            tooltip
-                            data-tooltip={refreshPaused ? T("S185") : T("S184")}
-                            icon={refreshPaused ? <Play /> : <Pause />}
-                            onclick={() => {
-                                useUiContextFn.haptic()
-                                setRefreshPaused(!refreshPaused)
-                                refreshPausedList[id] = !refreshPaused
-                            }}
-                        />
-                        {type != "content" && (
-                            <ButtonImg
-                                m1
-                                tooltip
-                                data-tooltip={T("S186")}
-                                icon={<Aperture />}
-                                onclick={() => {
-                                    useUiContextFn.haptic()
-                                    const typeImage =
-                                        type == "camera"
-                                            ? "image/jpeg"
-                                            : imageCache.current.type
-                                    const filename =
-                                        "snap." + typeImage.split("/")[1]
-                                    const file = new Blob(
-                                        [imageCache.current],
-                                        {
-                                            type: typeImage,
-                                        }
-                                    )
-                                    if (window.navigator.msSaveOrOpenBlob)
-                                        // IE10+
-                                        window.navigator.msSaveOrOpenBlob(
-                                            file,
-                                            filename
-                                        )
-                                    else {
-                                        // Others
-                                        const a = document.createElement("a")
-                                        const url = URL.createObjectURL(file)
-                                        a.href = url
-                                        a.download = filename
-                                        a.onload = () => {
-                                            URL.revokeObjectURL(a.href)
-                                        }
-                                        document.body.appendChild(a)
-                                        a.click()
-                                        setTimeout(function () {
-                                            document.body.removeChild(a)
-                                            window.URL.revokeObjectURL(url)
-                                        }, 0)
-                                    }
-                                }}
-                            />
-                        )}
-                    </Fragment>
-                )}
-                {target == "page" && (
-                    <Fragment>
-                        <span class="m-1" />
-                        <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
-                            asButton={true}
-                        />
-                    </Fragment>
-                )}
+            <div id={target_id} ref={containerRef} style="height: 100%;">
+                <ContainerHelper id={`page_${id}`} />
+                {renderControls()}
             </div>
         )
     }
 
-    const MainContent = () => {
-        switch (type) {
-            case "camera":
-                return (
-                    <img
-                        class="mt-2"
-                        ref={element}
-                        id={"page_content_" + id}
-                        src={pageSource.startsWith("http") ? pageSource : ""}
-                        alt={label}
-                    />
-                )
-            case "image":
-                return (
-                    <img
-                        class="mt-2"
-                        ref={element}
-                        id={"page_content_" + id}
-                        src={pageSource.startsWith("http") ? pageSource : ""}
-                        alt={label}
-                    />
-                )
-            default:
-                const handleIframeError = () => {
-                    console.log("Error loading iframe")
-                }
-                return (
-                    <iframe
-                        class={
-                            type == "extension"
-                                ? "extensionContainer d-block iframe-container"
-                                : "content-container d-block iframe-container"
-                        }
-                        ref={element}
-                        id={"page_content_" + id}
-                        src={pageSource.startsWith("http") ? pageSource : ""}
-                        alt={label}
-                    ></iframe>
-                )
-        }
-    }
-
-    useEffect(() => {
-        //load using internal http manager
-        if (!pageSource.startsWith("http")) loadContent(true)
-        //init timer if any
-
-        if (refreshtime != 0 && type != "extension") {
-            clearInterval(timerIDs[id])
-            timerIDs[id] = setInterval(loadContent, refreshtime)
-        }
-
-        return () => {
-            //cleanup
-            if (refreshtime != 0 && type != "extension") {
-                clearInterval(timerIDs[id])
-            }
-        }
-    })
-    if (target == "page")
+    if (target === "panel") {
+       // console.log("Rendering panel element " + extra_content_id)
+        const displayIcon = iconsList[icon] || ""
         return (
-            <div id={"page_"+id} ref={panelRef} style="height: 100%">
-                <ContainerHelper id={"page_"+id} /> 
-                <MainContent />
-                <ControlButtons />
-            </div>
-        )
-    if (target == "panel") {
-        const displayIcon = iconsList[icon] ? iconsList[icon] : ""
-        //console.log("Panel :", id, "Ref :", panelRef.current)
-        return (
-            <div class="panel panel-dashboard" id={id} ref={panelRef}>
-                <ContainerHelper id={id} />
-                <div class="navbar">
-                    <span class="navbar-section  feather-icon-container">
-                        {displayIcon}
-                        <strong class="text-ellipsis">{T(label)}</strong>
-                    </span>
-                    <span class="navbar-section">
-                        {refreshtime == 0 && (
-                            <ButtonImg
-                                xs
-                                m1
-                                nomin="yes"
-                                icon={<RefreshCcw size="0.8rem" />}
-                                onclick={() => {
-                                    useUiContextFn.haptic()
-                                    if (contentCache[id])
-                                        contentCache[id] = undefined
-                                    loadContent()
-                                }}
-                            />
-                        )}
-                        <span class="full-height">
-                            <FullScreenButton
-                                panelRef={panelRef}
-                                hideOnFullScreen={true}
-                            />
-                            <CloseButton
-                                panelRef={panelRef}
-                                panelId={id}
-                                hideOnFullScreen={true}
-                                callbackfn={() => {
-                                    clearInterval(timerIDs[id])
-                                }}
-                            />
+            <Fragment>
+                <div class="panel panel-dashboard" id={id}>
+                    <ContainerHelper id={id} />
+                    <div class="navbar">
+                        <span class="navbar-section feather-icon-container">
+                            {displayIcon}
+                            <strong class="text-ellipsis">{T(label)}</strong>
                         </span>
-                    </span>
-                </div>
-                <div class="panel-body panel-body-dashboard no-margin-no-padding">
-                    <MainContent />
-                </div>
-                {parseInt(refreshtime) > 0 && type != "extension" && (
-                    <div class="panel-footer">
-                        <ControlButtons />
+                        <span class="navbar-section">
+                            {renderControls()}
+                        </span>
                     </div>
-                )}
-            </div>
+                    <div class="panel-body panel-body-dashboard no-margin-no-padding"  ref={containerRef} id={target_id}>
+                        {/* Host content */}
+                    </div>
+                    {parseInt(refreshtime) > 0 && type !== "extension" && (
+                        <div class="panel-footer">
+                            {renderControls()}
+                        </div>
+                    )}
+                </div>
+              
+            </Fragment>
         )
     }
 }
 
-export default ExtraContent
+export { ExtraContent, ExtraContentItem }

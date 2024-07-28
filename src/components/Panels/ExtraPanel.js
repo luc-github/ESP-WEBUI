@@ -17,7 +17,7 @@ Files.js - ESP3D WebUI component file
 */
 
 import { h } from "preact"
-import ExtraContent from "../ExtraContent"
+import {ExtraContent} from "../ExtraContent"
 
 /*
  * Local const

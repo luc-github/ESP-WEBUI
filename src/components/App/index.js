@@ -31,10 +31,12 @@ import { TargetContextProvider } from "../../targets"
 import { ToastsContainer } from "../Toast"
 import { ModalContainer } from "../Modal"
 import { ContentContainer } from "../../areas"
+import { ElementsCache } from "../../areas/elementsCache"
 
 const App = () => {
     return (
         <div id="app">
+            <ElementsCache />
             <DatasContextProvider>
                 <TargetContextProvider>
                     <RouterContextProvider>

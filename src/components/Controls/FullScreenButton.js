@@ -25,12 +25,17 @@ const isFullScreen = (element) => {
     return document.fullscreenElement === element
 }
 
-const FullScreenButton = ({ panelRef, hideOnFullScreen, asButton }) => {
+const FullScreenButton = ({ panelRef,panelId, hideOnFullScreen, asButton, onclick }) => {
     const [isFullScreenMode, setIsFullScreenMode] = useState(false)
-
+    const getPanelRef = () => {
+        if(panelRef) return panelRef.current
+        if (panelId)return document.getElementById(panelId)
+            return null
+    }
     useEffect(() => {
         const handleFullscreenChange = () => {
-            setIsFullScreenMode(isFullScreen(panelRef.current))
+             if(getPanelRef)   
+            setIsFullScreenMode(isFullScreen(getPanelRef))
         }
 
         document.addEventListener("fullscreenchange", handleFullscreenChange)
@@ -41,11 +46,18 @@ const FullScreenButton = ({ panelRef, hideOnFullScreen, asButton }) => {
                 handleFullscreenChange
             )
         }
-    }, [panelRef])
+    }, [])
 
     const toggleFullScreen = () => {
-        if (!isFullScreenMode) {
-            panelRef.current.requestFullscreen()
+        if (!isFullScreenMode) {//
+            if (onclick) {
+                onclick()
+            }
+            if (getPanelRef()){
+                getPanelRef().requestFullscreen()
+            }
+           
+            console.log("Fullscreen activated pour " + panelId)
         } else {
             if (document.fullscreenElement) {
                 document.exitFullscreen()
