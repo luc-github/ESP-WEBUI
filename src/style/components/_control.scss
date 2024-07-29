@@ -328,15 +328,17 @@ span.input-group-addon {
     text-align: center;
 }
 
-.content-container,
+.contentContainer,
 .extensionContainer ,
 .cameraContainer,
 .imageContainer {
     border: none;
     width: 100%;
+}
+.contentContainer,
+.extensionContainer {
     height: 100%;
 }
-
 
 .page-container {
     display:flex;
@@ -344,16 +346,20 @@ span.input-group-addon {
     height: calc(100% - 1rem);
     
 }
-.extra-content-container {
+.extra-contentContainer {
     height: 100%;
     width: 100%;
     position:absolute;
-    background-color: red!important;
-    color: white!important;
-    border: 1px solid red!important;
-    z-index: 99999;
+    z-index: 9999999;
     opacity: 1;
     display: block;
+    pointer-events: auto!important;
+    user-select: auto!important;
+    -moz-user-select: auto!important;
+    -webkit-user-select:auto!important;
+    -ms-user-select: auto!important;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 .fallback-content {
     display: none;
@@ -366,7 +372,7 @@ span.input-group-addon {
 }
 
 .panel-target-container {
-    z-index: 1;
+    z-index: auto;
 }
 
 

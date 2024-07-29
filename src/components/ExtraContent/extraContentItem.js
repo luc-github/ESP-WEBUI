@@ -18,12 +18,12 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { useState, useEffect, useCallback } from "preact/hooks"
+import { useState, useEffect, useCallback, useRef } from "preact/hooks"
 import { espHttpURL } from "../Helpers"
 import { useHttpFn } from "../../hooks"
 import { ButtonImg, ContainerHelper } from "../Controls"
 import { T } from "../Translations"
-import { Play, Pause, Aperture, RefreshCcw } from "preact-feather"
+import { Play, Pause, Aperture } from "preact-feather"
 import { elementsCache } from "../../areas/elementsCache"
 
 const ExtraContentItem = ({
@@ -38,30 +38,11 @@ const ExtraContentItem = ({
     refreshPaused = false,
 }) => {
     const [contentUrl, setContentUrl] = useState("")
+    const [hasError, setHasError] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const { createNewRequest } = useHttpFn
-    console.log(id)
     const element_id = id.replace("extra_content_", type)
-    let error_loading = false
-    //console.log("ExtraContentItem rendering for " + id, "is in cache: " + elementsCache.has(id))
-    /*const loadContent = useCallback((forceReload = false) => {
-        if ( elementsCache.has(id) && !forceReload) {
-            console.log("Content already loaded for " + id)
-            return
-        }
-        if (source.startsWith("http") || forceReload) {
-            setContentUrl(source)
-        } else {
-            const idquery = type === "content" ? type + id : "download" + id
-            createNewRequest(
-                espHttpURL(source),
-                { method: "GET", id: idquery, max: 2 },
-                {
-                    onSuccess: handleContentSuccess,
-                    onFail: handleContentError,
-                }
-            )
-        }
-    }, [id, source, type, createNewRequest])
+    const iframeRef = useRef(null)
 
     const handleContentSuccess = useCallback((result) => {
         let blob
@@ -79,39 +60,71 @@ const ExtraContentItem = ({
         }
         const url = URL.createObjectURL(blob)
         setContentUrl(url)
+        setHasError(false)
+        setIsLoading(false)
     }, [type])
 
     const handleContentError = useCallback((error) => {
         console.error(`Error loading content for ${id}:`, error)
-        const errorContent = `<html><body><div style='display: flex; justify-content: center; align-items: center; height: 100%; font-family: Arial, sans-serif;'><p>Error loading content</p></div></body></html>`
-        const errorBlob = new Blob([errorContent], { type: "text/html" })
-        setContentUrl(URL.createObjectURL(errorBlob))
+        setHasError(true)
+        setIsLoading(false)
     }, [id])
 
-    useEffect(() => {
-     loadContent()
-    }, [loadContent()])
-*/
-    useEffect(() => {
-        if (error_loading) {
-            const fallback = document.getElementById("fallback_" + element_id)
-            const element = document.getElementById(element_id)
-            if (fallback) {
-                fallback.style.display = "block"
-                if (element) {
-                    element.style.display = "none"
+    const loadContent = useCallback((forceReload = false) => {
+        console.log("Loading content for " + id)
+        setIsLoading(true)
+        if (source.startsWith("http") || forceReload) {
+            console.log("Loading URL " + source)
+            setContentUrl(source)
+            setHasError(false)
+            setIsLoading(false)
+        } else {
+            const idquery = type === "content" ? type + id : "download" + id
+            createNewRequest(
+                espHttpURL(source),
+                { method: "GET", id: idquery, max: 2 },
+                {
+                    onSuccess: handleContentSuccess,
+                    onFail: handleContentError,
                 }
-            }
+            )
         }
-    }, [])
-    const handleRefresh = () => loadContent(true)
+    }, [id, source, type, createNewRequest, handleContentSuccess, handleContentError])
+
+    useEffect(() => {
+        loadContent()
+    }, [loadContent])
+
+    const handleError = () => {
+        console.log("Error loading content for " + id)
+        setHasError(true)
+        setIsLoading(false)
+    }
+
+    const handleLoad = () => {
+        console.log("Load done for " + id)
+        setHasError(false)
+        setIsLoading(false)
+
+        if (type === "extension" && iframeRef.current) {
+            const iframe = iframeRef.current
+            const doc = iframe.contentWindow.document
+            const body = doc.querySelector("body")
+            body.classList.add("body-extension")
+            const css = document.querySelectorAll("style")
+            css.forEach((csstag) => {
+                doc.head.appendChild(csstag.cloneNode(true))
+            })
+        }
+    }
+
     const toggleFullScreen = () =>
         elementsCache.updateState(id, { isFullScreen: !isFullScreen })
     const toggleRefreshPause = () =>
         elementsCache.updateState(id, { refreshPaused: !refreshPaused })
-    console.log("type", type)
+
     const RenderControls = () => (
-        <div class="m-2 image-button-bar luc-controls">
+        <div class="m-2 image-button-bar">
             {type == "image" && (
                 <ButtonImg
                     m1
@@ -123,7 +136,6 @@ const ExtraContentItem = ({
                     }}
                 />
             )}
-
             {parseInt(refreshtime) > 0 && type !== "extension" && (
                 <ButtonImg
                     m1
@@ -136,51 +148,48 @@ const ExtraContentItem = ({
         </div>
     )
 
-    let content = []
-    const onErrorLoading = () => {
-        console.log("Error loading content for " + id)
-        error_loading = true
-    }
+    const renderContent = () => {
+        if (isLoading) {
+            return <div>Loading...</div>
+        }
 
-    if (type === "camera" || type === "image") {
-        content.push(
-            <img
-                src={contentUrl}
-                alt={label ? label : "image jpeg"}
-                class={
-                    type === "camera"
-                        ? "extensionContainer"
-                        : "content-container"
-                }
-                id={element_id}
-                onerror={onErrorLoading()}
-            />
-        )
-    } else {
-        content.push(
-            <iframe
-                src={contentUrl}
-                class={
-                    type === "extension"
-                        ? "extensionContainer"
-                        : "content-container"
-                }
-                id={element_id}
-                onerror={onErrorLoading()}
-            />
-        )
-    }
+        if (hasError) {
+            return (
+                <div id={"fallback_" + element_id} class="fallback-content">
+                    <p>Error loading {type}</p>
+                    <p>Please check the URL</p>
+                </div>
+            )
+        }
 
-    content.push(
-        <div id={"fallback_" + element_id} class="fallback-content">
-            <p>Error loading {type}</p>
-            <p>Please check the URL</p>
-        </div>
-    )
+        if (type === "camera" || type === "image") {
+            return (
+                <img
+                    src={contentUrl}
+                    alt={label ? label : "image jpeg"}
+                    class={type === "camera" ? "cameraContainer" : "imageContainer"}
+                    id={element_id}
+                    onError={handleError}
+                    onLoad={handleLoad}
+                />
+            )
+        } else {
+            return (
+                <iframe
+                    ref={iframeRef}
+                    src={contentUrl}
+                    class={type === "extension" ? "extensionContainer" : "contentContainer"}
+                    id={element_id}
+                    onError={handleError}
+                    onLoad={handleLoad}
+                />
+            )
+        }
+    }
 
     return (
-        <div id={id} class="extra-content-container">
-            {content}
+        <div id={id} class="extra-contentContainer">
+            {renderContent()}
             <RenderControls />
             {target === "panel" && <ContainerHelper id={id} />}
         </div>
