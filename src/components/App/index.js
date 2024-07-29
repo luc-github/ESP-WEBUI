@@ -36,11 +36,12 @@ import { ElementsCache } from "../../areas/elementsCache"
 const App = () => {
     return (
         <div id="app">
-            <ElementsCache />
+            
             <DatasContextProvider>
                 <TargetContextProvider>
                     <RouterContextProvider>
                         <UiContextProvider>
+                            <ElementsCache />
                             <HttpQueueContextProvider>
                                 <SettingsContextProvider>
                                     <WsContextProvider>
