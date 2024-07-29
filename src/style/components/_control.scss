@@ -334,10 +334,13 @@ span.input-group-addon {
 .imageContainer {
     border: none;
     width: 100%;
+    padding: 10px;
 }
 .contentContainer,
 .extensionContainer {
+    overflow: hidden;
     height: 100%;
+    
 }
 
 .page-container {
@@ -350,7 +353,7 @@ span.input-group-addon {
     height: 100%;
     width: 100%;
     position:absolute;
-    z-index: 9999999;
+    z-index: 9999;
     opacity: 1;
     display: block;
     pointer-events: auto!important;
@@ -358,8 +361,7 @@ span.input-group-addon {
     -moz-user-select: auto!important;
     -webkit-user-select:auto!important;
     -ms-user-select: auto!important;
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow: hidden;
 }
 .fallback-content {
     display: none;
@@ -368,11 +370,12 @@ span.input-group-addon {
 
 .page-target-container {
     flex:1;
-    z-index: 1;
+    z-index: auto;
 }
 
 .panel-target-container {
     z-index: auto;
+    overflow: hidden;
 }
 
 
@@ -677,5 +680,5 @@ a label {
 
 
 .modals-container {
-    z-index:20000;
+    z-index:99999;
 }

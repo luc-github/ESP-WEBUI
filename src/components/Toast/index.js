@@ -53,7 +53,7 @@ const ToastsContainer = () => {
     const { toasts } = useUiContext()
     return (
         toasts.toastList && (
-            <div class="toasts-container">
+            <div class="toasts-container" >
                 {toasts.toastList.map((toast) => {
                     const { id, type, content } = toast
                     return (

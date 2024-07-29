@@ -40,7 +40,7 @@
 .menu-container,
 .information-container {
     flex: 0 1 auto;
-    z-index: auto;
+    z-index: 10000;
 }
 
 .menu-item-panel{

@@ -119,7 +119,6 @@ const elementsCache = {
                     element.style.left = '0';
                     element.style.width = '100%';
                     element.style.height = '100%';
-                    element.style.zIndex = '9999';
                 } else {
                     // Rétablir les styles normaux
                     element.style.position = 'absolute';
@@ -128,6 +127,12 @@ const elementsCache = {
                     element.style.width = '';
                     element.style.height = '';
                     element.style.zIndex = '';
+                }
+            }
+            if ('forceRefresh' in newState &&  newState.forceRefresh) {
+                const refreshElement = document.getElementById("refresh_" + id)
+                if (refreshElement) {
+                    refreshElement.click()
                 }
             }
             return true;

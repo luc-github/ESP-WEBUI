@@ -21,21 +21,23 @@ import { Fragment, h } from "preact"
 import { getFullscreenElement } from "../Helpers"
 import { ModalContainer } from "../Modal"
 import { ToastsContainer } from "../Toast"
+import { useState, useEffect,  } from "preact/hooks"
 
 const ContainerHelper = (props) => {
     const { id } = props
-    //console.log("ContainerHelper id", id)
+    console.log("ContainerHelper id", id)
     const fullScreenElement = getFullscreenElement()
     if (!fullScreenElement) {
-        //console.log("No fullscreen element")
+        console.log("No fullscreen element")
         return null
     } else {
-        //console.log("Fullscreen element", fullScreenElement.id)
+        console.log("Fullscreen element", fullScreenElement.id)
     }
-    //console.log("ContainerHelper id ", id, " vs fullscreen element id ", fullScreenElement.id)
+    console.log("ContainerHelper id ", id, " vs fullscreen element id ", fullScreenElement.id)
     if (fullScreenElement.id != id) {
         return null
     }
+
     return (
         <Fragment>
             <ModalContainer id={"modal_" + id} />

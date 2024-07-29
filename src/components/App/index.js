@@ -41,12 +41,12 @@ const App = () => {
                 <TargetContextProvider>
                     <RouterContextProvider>
                         <UiContextProvider>
-                            <ElementsCache />
                             <HttpQueueContextProvider>
                                 <SettingsContextProvider>
                                     <WsContextProvider>
                                         <ToastsContainer id="top_toasts_container"/>
                                         <ModalContainer id="top_modals_container"/>
+                                        <ElementsCache />
                                         <ContentContainer />
                                     </WsContextProvider>
                                 </SettingsContextProvider>

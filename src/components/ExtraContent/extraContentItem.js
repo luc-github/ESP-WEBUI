@@ -33,16 +33,17 @@ const ExtraContentItem = ({
     label,
     target,
     refreshtime,
-    isVisible = true,
-    isFullScreen = false,
-    refreshPaused = false,
 }) => {
     const [contentUrl, setContentUrl] = useState("")
     const [hasError, setHasError] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [isPaused, setPause] = useState(false)
+    const [isFullscreen, setIsFullscreen] = useState(false)
     const { createNewRequest } = useHttpFn
     const element_id = id.replace("extra_content_", type)
     const iframeRef = useRef(null)
+
+    console.log("ExtraContentItem id", id)
 
     const handleContentSuccess = useCallback((result) => {
         let blob
@@ -70,10 +71,11 @@ const ExtraContentItem = ({
         setIsLoading(false)
     }, [id])
 
-    const loadContent = useCallback((forceReload = false) => {
+    const loadContent = useCallback(() => {
+        //do we need to check if is already loading?
         console.log("Loading content for " + id)
         setIsLoading(true)
-        if (source.startsWith("http") || forceReload) {
+        if (source.startsWith("http") ) {
             console.log("Loading URL " + source)
             setContentUrl(source)
             setHasError(false)
@@ -117,11 +119,15 @@ const ExtraContentItem = ({
             })
         }
     }
+    const handleFullScreen = () => {     
+        setIsFullscreen(!isFullscreen)
+        const element = document.getElementById(id)
+       
+            element.requestFullscreen()
+        
+    }
 
-    const toggleFullScreen = () =>
-        elementsCache.updateState(id, { isFullScreen: !isFullScreen })
-    const toggleRefreshPause = () =>
-        elementsCache.updateState(id, { refreshPaused: !refreshPaused })
+
 
     const RenderControls = () => (
         <div class="m-2 image-button-bar">
@@ -145,11 +151,13 @@ const ExtraContentItem = ({
                     onclick={toggleRefreshPause}
                 />
             )}
+        <button id={"refresh_"+id} onclick={()=>{loadContent(true)}} style="display:none">Refresh</button>
+        <button id={"fullscreen_"+id} onclick={()=>{handleFullScreen()}} style="display:block">Fullscreen</button>
         </div>
     )
 
     const renderContent = () => {
-        if (isLoading) {
+        if (isLoading && type !="image" && type !="camera") {
             return <div>Loading...</div>
         }
 
@@ -186,12 +194,13 @@ const ExtraContentItem = ({
             )
         }
     }
-
+    console.log("Rendering element " + id, target)
     return (
         <div id={id} class="extra-contentContainer">
+         <button id={"fullscreen_"+id} onclick={()=>{handleFullScreen()}} style="display:block">Fullscreen</button>
             {renderContent()}
             <RenderControls />
-            {target === "panel" && <ContainerHelper id={id} />}
+            {target === "panel" && <ContainerHelper id={id} isFullscreen={isFullscreen} />}
         </div>
     )
 }
