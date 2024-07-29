@@ -52,7 +52,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     updateContentPosition()
     useEffect(() => {
         if (!elementsCache.has(extra_content_id)) {
-            console.log("Creating element " + extra_content_id," because it doesn't exist")
+            //console.log("Creating element " + extra_content_id," because it doesn't exist")
             elementsCache.create(extra_content_id, { 
                 id, 
                 source, 
@@ -64,7 +64,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                 isVisible: true
             })
         } else {
-            console.log("Updating element " + extra_content_id + " because it already exists")
+            //console.log("Updating element " + extra_content_id + " because it already exists")
             elementsCache.updateState(extra_content_id, { isVisible: true})
         }
 
@@ -87,8 +87,8 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                 main.removeEventListener('resize', handleScrollAndResize)
            }
             window.removeEventListener('resize', handleScrollAndResize)
-            console.log("Hiding element " + extra_content_id)
-            //elementsCache.updateState(extra_content_id, { isVisible: false })
+            //console.log("Hiding element " + extra_content_id)
+            elementsCache.updateState(extra_content_id, { isVisible: false })
         }
     }, [])
 
@@ -105,7 +105,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         elementsCache.updateState(extra_content_id, { isFullScreen: !isFullScreen })
     }
 
-    const renderControls = () => (
+    const PanelRenderControls = () => (
         <div class="m-2 image-button-bar">
             <ButtonImg
                 xs
@@ -119,21 +119,40 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                     panelId={extra_content_id}
                     onclick={handleFullScreen}
                 />
-                <CloseButton
+     <CloseButton
                     panelRef={containerRef}
                     panelId={id}
-                    callbackfn={() => elementsCache.updateState(extra_content_id, { isVisible: false })}
                 />
             </span>
+        </div>
+    )
+
+    const PageRenderControls = () => (
+        <div class="m-2 image-button-bar">
+            <ButtonImg
+                m1
+                nomin="yes"
+                icon={<RefreshCcw size="0.8rem" />}
+                onclick={handleRefresh}
+            />
+           
+                <FullScreenButton
+                    panelId={extra_content_id}
+                    onclick={handleFullScreen}
+                    asButton={true}
+                />
+     
         </div>
     )
 
     if (target === "page") {
         console.log("Rendering page element " + extra_content_id)
         return (
-            <div id={target_id} ref={containerRef} style="height: 100%;">
-                <ContainerHelper id={`page_${id}`} />
-                {renderControls()}
+            <div class = "page-container">
+            <div id={target_id} ref={containerRef} class="page-target-container">
+              {/* content should fit this container */}
+            </div>
+            <PageRenderControls/>
             </div>
         )
     }
@@ -151,17 +170,12 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                             <strong class="text-ellipsis">{T(label)}</strong>
                         </span>
                         <span class="navbar-section">
-                            {renderControls()}
+                            {PanelRenderControls()}
                         </span>
                     </div>
-                    <div class="panel-body panel-body-dashboard no-margin-no-padding"  ref={containerRef} id={target_id}>
-                        {/* Host content */}
+                    <div class="panel-body panel-body-dashboard no-margin-no-padding panel-target-container"  ref={containerRef} id={target_id}>
+                        {/* content should fit this container */}
                     </div>
-                    {parseInt(refreshtime) > 0 && type !== "extension" && (
-                        <div class="panel-footer">
-                            {renderControls()}
-                        </div>
-                    )}
                 </div>
               
             </Fragment>

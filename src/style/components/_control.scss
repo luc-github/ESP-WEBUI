@@ -316,11 +316,6 @@ span.input-group-addon {
     border-radius: $border-radius;
 }
 
-.image-container,
-.camera-container {
-    border: none;
-    width: 100%;
-}
 
 .m-05 {
     margin: 0.05rem !important;
@@ -334,11 +329,46 @@ span.input-group-addon {
 }
 
 .content-container,
-.extensionContainer {
+.extensionContainer ,
+.cameraContainer,
+.imageContainer {
     border: none;
+    width: 100%;
+    height: 100%;
+}
+
+
+.page-container {
+    display:flex;
+    flex-direction: column;
+    height: calc(100% - 1rem);
+    
+}
+.extra-content-container {
     height: 100%;
     width: 100%;
+    position:absolute;
+    background-color: red!important;
+    color: white!important;
+    border: 1px solid red!important;
+    z-index: 99999;
+    opacity: 1;
+    display: block;
 }
+.fallback-content {
+    display: none;
+    text-align: center; font-size: 1.5rem; background-color: red; color: white; margin-top: 0.5rem;
+}
+
+.page-target-container {
+    flex:1;
+    z-index: 1;
+}
+
+.panel-target-container {
+    z-index: 1;
+}
+
 
 .body-extension {
     overflow-y: auto !important;

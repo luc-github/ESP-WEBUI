@@ -21,20 +21,27 @@ import { Fragment, h } from "preact"
 import { useState, useEffect, useCallback } from "preact/hooks"
 import { espHttpURL } from "../Helpers"
 import { useHttpFn } from "../../hooks"
-import {
-    ButtonImg,
-    FullScreenButton,
-    CloseButton,
-    ContainerHelper,
-} from "../Controls"
+import { ButtonImg, ContainerHelper } from "../Controls"
 import { T } from "../Translations"
 import { Play, Pause, Aperture, RefreshCcw } from "preact-feather"
 import { elementsCache } from "../../areas/elementsCache"
 
-const ExtraContentItem = ({ id, source, type, label, target, refreshtime, isVisible = true, isFullScreen = false, refreshPaused = false }) => {
+const ExtraContentItem = ({
+    id,
+    source,
+    type,
+    label,
+    target,
+    refreshtime,
+    isVisible = true,
+    isFullScreen = false,
+    refreshPaused = false,
+}) => {
     const [contentUrl, setContentUrl] = useState("")
     const { createNewRequest } = useHttpFn
-    console.log( id)
+    console.log(id)
+    const element_id = id.replace("extra_content_", type)
+    let error_loading = false
     //console.log("ExtraContentItem rendering for " + id, "is in cache: " + elementsCache.has(id))
     /*const loadContent = useCallback((forceReload = false) => {
         if ( elementsCache.has(id) && !forceReload) {
@@ -80,106 +87,104 @@ const ExtraContentItem = ({ id, source, type, label, target, refreshtime, isVisi
         const errorBlob = new Blob([errorContent], { type: "text/html" })
         setContentUrl(URL.createObjectURL(errorBlob))
     }, [id])
+
+    useEffect(() => {
+     loadContent()
+    }, [loadContent()])
 */
     useEffect(() => {
-        console.log("ExtraContentItem rendering for " + id, "is in cache: " + elementsCache.has(id))
+        if (error_loading) {
+            const fallback = document.getElementById("fallback_" + element_id)
+            const element = document.getElementById(element_id)
+            if (fallback) {
+                fallback.style.display = "block"
+                if (element) {
+                    element.style.display = "none"
+                }
+            }
+        }
     }, [])
-/*
     const handleRefresh = () => loadContent(true)
-    const toggleFullScreen = () => elementsCache.updateState(id, { isFullScreen: !isFullScreen })
-    const toggleRefreshPause = () => elementsCache.updateState(id, { refreshPaused: !refreshPaused })
-
-    const renderControls = () => (
-        <div class="m-2 image-button-bar">
-            {parseInt(refreshtime) === 0 && target === "page" && (
+    const toggleFullScreen = () =>
+        elementsCache.updateState(id, { isFullScreen: !isFullScreen })
+    const toggleRefreshPause = () =>
+        elementsCache.updateState(id, { refreshPaused: !refreshPaused })
+    console.log("type", type)
+    const RenderControls = () => (
+        <div class="m-2 image-button-bar luc-controls">
+            {type == "image" && (
                 <ButtonImg
                     m1
-                    icon={<RefreshCcw size="0.8rem" />}
-                    onclick={handleRefresh}
+                    tooltip
+                    data-tooltip={T("S186")}
+                    icon={<Aperture />}
+                    onclick={() => {
+                        // Handle screenshot functionality here
+                    }}
                 />
             )}
+
             {parseInt(refreshtime) > 0 && type !== "extension" && (
-                <>
-                    <ButtonImg
-                        m1
-                        tooltip
-                        data-tooltip={refreshPaused ? T("S185") : T("S184")}
-                        icon={refreshPaused ? <Play /> : <Pause />}
-                        onclick={toggleRefreshPause}
-                    />
-                    {type !== "content" && (
-                        <ButtonImg
-                            m1
-                            tooltip
-                            data-tooltip={T("S186")}
-                            icon={<Aperture />}
-                            onclick={() => {
-                                // Handle screenshot functionality here
-                            }}
-                        />
-                    )}
-                </>
-            )}
-           
-            {target === "panel" && (
-                <Fragment>
-                <CloseButton
-                    panelRef={{ current: document.getElementById(`extra_content_${id}`) }}
-                    panelId={id}
-                    hideOnFullScreen={true}
-                    callbackfn={() => elementsCache.updateState(id, { isVisible: false })}
-                /> 
-                <FullScreenButton
-                panelRef={{ current: document.getElementById(`extra_content_${id}`) }}
-                hideOnFullScreen={true}
-                asButton={true}
-                onclick={toggleFullScreen}
-            />
-            </Fragment>
+                <ButtonImg
+                    m1
+                    tooltip
+                    data-tooltip={refreshPaused ? T("S185") : T("S184")}
+                    icon={refreshPaused ? <Play /> : <Pause />}
+                    onclick={toggleRefreshPause}
+                />
             )}
         </div>
     )
-*/
-    const contentStyle = {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: isFullScreen ? '9999' : 'auto',
-        display: isVisible ? 'block' : 'none',
+
+    let content = []
+    const onErrorLoading = () => {
+        console.log("Error loading content for " + id)
+        error_loading = true
     }
 
-    let content
     if (type === "camera" || type === "image") {
-        content = <img src={contentUrl} alt={label} style="width: 100%; height: 100%; object-fit: contain;" />
+        content.push(
+            <img
+                src={contentUrl}
+                alt={label ? label : "image jpeg"}
+                class={
+                    type === "camera"
+                        ? "extensionContainer"
+                        : "content-container"
+                }
+                id={element_id}
+                onerror={onErrorLoading()}
+            />
+        )
     } else {
-        content = (
+        content.push(
             <iframe
                 src={contentUrl}
-                style={{
-                    border: 'none',
-                    width: '100%',
-                    height: '100%',
-                    visibility: contentUrl ? 'visible' : 'hidden'
-                }}
-                class={type === "extension" ? "extensionContainer" : "content-container"}
+                class={
+                    type === "extension"
+                        ? "extensionContainer"
+                        : "content-container"
+                }
+                id={element_id}
+                onerror={onErrorLoading()}
             />
         )
     }
-    console.log("ExtraContentItem rendering for " + id, "is in cache: " + elementsCache.has(id))
-    return (
-        <div id={id} class="extra-content-container" >
-            My {type} content is here
-         </div>
+
+    content.push(
+        <div id={"fallback_" + element_id} class="fallback-content">
+            <p>Error loading {type}</p>
+            <p>Please check the URL</p>
+        </div>
     )
-  /*  return (
-        <div id={id} style={contentStyle}>
+
+    return (
+        <div id={id} class="extra-content-container">
             {content}
-            {renderControls()}
+            <RenderControls />
             {target === "panel" && <ContainerHelper id={id} />}
         </div>
-    )*/
+    )
 }
 
 export { ExtraContentItem }

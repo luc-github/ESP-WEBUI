@@ -36,23 +36,38 @@ const elementsCache = {
     create: (id, props) => {
         if (!elementsCache.has(id)) {
             const cacheHost = document.getElementById("elementsCache")
-            console.log("Creating element, because it doesn't exist: " + id)
-            console.log("Current host size is " + cacheHost.children.length)
+            //console.log("Creating element, because it doesn't exist: " + id)
+            //console.log("Current host size is " + cacheHost.children.length)
             try {
                 const container = document.getElementById("elementsCache")
-                const vnode = container.appendChild(document.createElement('div'))
-                vnode.id = "new_element" + id
-                const new_vnode = render(<ExtraContentItem {...props} id={id} />, container, vnode)
-                console.log("Element created: " + id + ", exists in cache: " + elementsCache.has(id))
-                console.log("Now Current host size is " + cacheHost.children.length)
-                console.log(cacheHost.innerHTML)
+                
+                //NOTE: https://preactjs.com/guide/v10/api-reference/#render
+                //the third argument is deprecated and will be removed in a future version
+                // I do not have idea how to work around this so let see when V11 is out, 
+                // hopefully we will have a working solution to add a new element to the cache
+                // without erasing the previous one
+                //const vnode = container.appendChild(document.createElement('div'))
+                //vnode.id = "new_element" + id
+                //const new_vnode = render(<ExtraContentItem {...props} id={id} />, container, vnode)
+
+                //Note2: Another solution is to use a host element to hold the new element
+                //it  add  a new layer of complexity to the code but seems the way recommended
+                const vnode = container.querySelector('#host_' + id)?container.querySelector('#host_' + id):container.appendChild(document.createElement('div'))
+                if (vnode.id !== "host_" + id) {
+                    vnode.id = "host_" + id
+                    vnode.style.display = "contents";
+                }
+                //It use current or a new host vnode
+                render(<ExtraContentItem {...props} id={id} />, vnode)
+                //console.log("Element created: " + id + ", exists in cache: " + elementsCache.has(id))
+                //console.log("Now Current host size is " + cacheHost.children.length)
                 return true
             } catch (error) {
                 console.error(`Error creating element ${id}:`, error)
                 return false
             }
         } else {
-            //console.log("Element already exists: " + id)
+            ////console.log("Element already exists: " + id)
             return true
         }
     },
@@ -66,10 +81,14 @@ const elementsCache = {
     remove: (id) => {
         const cacheItem = elementsCache.get(id)
         if (cacheItem) {
+            //due to the way render, each new element has div as parent itself connected to the cache
+            const itemHost = cacheItem.parentNode
             try {
                 const cacheHost = document.getElementById("elementsCache")
                 if (!cacheHost) return false
-                removeCache = removeChild(cacheHost, cacheItem)
+                //sanity check if we have new implementation
+                if (cacheHost == itemHost) return false
+                removeCache = removeChild(cacheHost, itemHost)
                 if (removeCache) {
                     removeCache.remove()
                     return true
@@ -86,11 +105,12 @@ const elementsCache = {
 
     updateState: (id, newState) => {
         const element = document.getElementById(id);
-        console.log("Updating state for element " + id)
-        console.log(newState)
+        //console.log("Updating state for element " + id)
+        //console.log(newState)
         if (element) {
             if ('isVisible' in newState) {
                 element.style.display = newState.isVisible ? 'block' : 'none';
+                if (newState.isVisible) {console.log("Element " + id + " is now visible")} else {console.log("Element " + id + " is now hidden")}
             }
             if ('isFullScreen' in newState) {
                 if (newState.isFullScreen) {
@@ -117,10 +137,10 @@ const elementsCache = {
 
     updatePosition: (id, position) => {
         const cacheItem = elementsCache.get(id)
-        //console.log("Updating position for element " + id + ", exists: " + elementsCache.has(id))
+        ////console.log("Updating position for element " + id + ", exists: " + elementsCache.has(id))
         if (cacheItem) {
             try {
-                //console.log("Updating positions to", position)
+                ////console.log("Updating positions to", position)
                 cacheItem.style.top = `${position.top}px`;
                 cacheItem.style.left = `${position.left}px`;
                 cacheItem.style.width = `${position.width}px`;
@@ -131,7 +151,7 @@ const elementsCache = {
                 return false
             }
         } else {
-            //console.log("Element " + id + " doesn't exist")
+            ////console.log("Element " + id + " doesn't exist")
         }
         return false
     }

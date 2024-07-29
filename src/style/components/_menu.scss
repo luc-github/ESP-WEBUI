@@ -37,6 +37,12 @@
     color: #5755d9;
 }
 
+.menu-container,
+.information-container {
+    flex: 0 1 auto;
+    z-index: auto;
+}
+
 .menu-item-panel{
     pointer-events: none!important;
 }
