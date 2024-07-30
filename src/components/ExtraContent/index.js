@@ -49,6 +49,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
             //console.log("Element " + extra_content_id + " doesn't exist")
         }
     }
+    
     updateContentPosition()
     useEffect(() => {
         if (!elementsCache.has(extra_content_id)) {
@@ -66,6 +67,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         } else {
             //console.log("Updating element " + extra_content_id + " because it already exists")
             elementsCache.updateState(extra_content_id, { isVisible: true})
+            updateContentPosition()
         }
 
         updateContentPosition()

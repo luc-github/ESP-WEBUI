@@ -53,7 +53,7 @@ const UiContextProvider = ({ children }) => {
         authenticate: true,
         page: "connecting",
     })
-
+    const [uiSetup, setUiSetup] = useState(false)
     const toastsRef = useRef(toasts)
     toastsRef.current = toasts
     const notificationsRef = useRef(notifications)
@@ -381,6 +381,10 @@ const UiContextProvider = ({ children }) => {
             setNeedLogin,
             showKeepConnected,
             setShowKeepConnected,
+        },
+        ui: {
+            ready:uiSetup,
+            setReady:setUiSetup,
         },
     }
 

@@ -19,11 +19,51 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, render } from "preact"
+import { useState, useEffect, useMemo } from "preact/hooks"
 import { ExtraContentItem } from "../components/ExtraContent"
+import { useUiContext, useSettingsContext } from "../contexts"
 
 const ElementsCache = () => {
-    return (<div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible;" id="elementsCache"></div>)
+    const { ui } = useUiContext()
+    const { interfaceSettings } = useSettingsContext()
+    const [content, setContent] = useState([])
+
+    const extractValues = (entry) => {
+        const result = { id: "extra_content_EXTRAPANEL_" + entry.id };
+        entry.value.forEach(param => {
+            result[param.name] = param.value;
+        });
+        return result;
+    };
+
+    useEffect(() => {
+        if (ui.ready && interfaceSettings.current?.settings?.extracontents) {
+            console.log("ElementsCache can now be created")
+            
+            const extraContentSettings = interfaceSettings.current.settings.extracontents;
+            const extraContentsEntry = extraContentSettings.find(entry => entry.id === 'extracontents');
+            
+            if (extraContentsEntry?.value?.length > 0) {
+                const newContent = extraContentsEntry.value.map(entry => {
+                    const item = extractValues(entry)
+                    console.log(item)
+                    return <ExtraContentItem key={item.id} {...item} />
+                });
+                setContent(newContent);
+            }
+        }
+    }, [ui.ready, interfaceSettings]);
+
+    const memoizedContent = useMemo(() => content, [content]);
+
+    return (
+        <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible;" id="elementsCache">
+            {memoizedContent}
+        </div>
+    )
 }
+
+export default ElementsCache;
 
 const elementsCache = {
 
@@ -34,40 +74,13 @@ const elementsCache = {
     },
 
     create: (id, props) => {
+        console.log("Got request of Creating element " + id)
         if (!elementsCache.has(id)) {
-            const cacheHost = document.getElementById("elementsCache")
-            //console.log("Creating element, because it doesn't exist: " + id)
-            //console.log("Current host size is " + cacheHost.children.length)
-            try {
-                const container = document.getElementById("elementsCache")
-                
-                //NOTE: https://preactjs.com/guide/v10/api-reference/#render
-                //the third argument is deprecated and will be removed in a future version
-                // I do not have idea how to work around this so let see when V11 is out, 
-                // hopefully we will have a working solution to add a new element to the cache
-                // without erasing the previous one
-                //const vnode = container.appendChild(document.createElement('div'))
-                //vnode.id = "new_element" + id
-                //const new_vnode = render(<ExtraContentItem {...props} id={id} />, container, vnode)
-
-                //Note2: Another solution is to use a host element to hold the new element
-                //it  add  a new layer of complexity to the code but seems the way recommended
-                const vnode = container.querySelector('#host_' + id)?container.querySelector('#host_' + id):container.appendChild(document.createElement('div'))
-                if (vnode.id !== "host_" + id) {
-                    vnode.id = "host_" + id
-                    vnode.style.display = "contents";
-                }
-                //It use current or a new host vnode
-                render(<ExtraContentItem {...props} id={id} />, vnode)
-                //console.log("Element created: " + id + ", exists in cache: " + elementsCache.has(id))
-                //console.log("Now Current host size is " + cacheHost.children.length)
-                return true
-            } catch (error) {
-                console.error(`Error creating element ${id}:`, error)
-                return false
-            }
+           console.log("Element doesn't exist: " + id)
+           return false
         } else {
-            ////console.log("Element already exists: " + id)
+            console.log("Element already exists: " + id)
+            elementsCache.updateState(id, {"isVisible": true})
             return true
         }
     },

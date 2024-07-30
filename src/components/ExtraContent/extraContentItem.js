@@ -18,19 +18,18 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { useState, useEffect, useCallback, useRef } from "preact/hooks"
+import { useState, useEffect, useCallback, useRef ,useMemo} from "preact/hooks"
 import { espHttpURL } from "../Helpers"
 import { useHttpFn } from "../../hooks"
 import { ButtonImg, ContainerHelper } from "../Controls"
 import { T } from "../Translations"
 import { Play, Pause, Aperture } from "preact-feather"
-import { elementsCache } from "../../areas/elementsCache"
 
 const ExtraContentItem = ({
     id,
     source,
     type,
-    label,
+    name,
     target,
     refreshtime,
 }) => {
@@ -122,42 +121,11 @@ const ExtraContentItem = ({
     const handleFullScreen = () => {     
         setIsFullscreen(!isFullscreen)
         const element = document.getElementById(id)
-       
-            element.requestFullscreen()
-        
+        element.requestFullscreen()
     }
 
-
-
-    const RenderControls = () => (
-        <div class="m-2 image-button-bar">
-            {type == "image" && (
-                <ButtonImg
-                    m1
-                    tooltip
-                    data-tooltip={T("S186")}
-                    icon={<Aperture />}
-                    onclick={() => {
-                        // Handle screenshot functionality here
-                    }}
-                />
-            )}
-            {parseInt(refreshtime) > 0 && type !== "extension" && (
-                <ButtonImg
-                    m1
-                    tooltip
-                    data-tooltip={refreshPaused ? T("S185") : T("S184")}
-                    icon={refreshPaused ? <Play /> : <Pause />}
-                    onclick={toggleRefreshPause}
-                />
-            )}
-        <button id={"refresh_"+id} onclick={()=>{loadContent(true)}} style="display:none">Refresh</button>
-        <button id={"fullscreen_"+id} onclick={()=>{handleFullScreen()}} style="display:block">Fullscreen</button>
-        </div>
-    )
-
-    const renderContent = () => {
-        if (isLoading && type !="image" && type !="camera") {
+    const renderContent = useMemo(() => {
+        if (isLoading && type !== "image" && type !== "camera") {
             return <div>Loading...</div>
         }
 
@@ -174,7 +142,7 @@ const ExtraContentItem = ({
             return (
                 <img
                     src={contentUrl}
-                    alt={label ? label : "image jpeg"}
+                    alt={name ? name : "image jpeg"}
                     class={type === "camera" ? "cameraContainer" : "imageContainer"}
                     id={element_id}
                     onError={handleError}
@@ -193,13 +161,39 @@ const ExtraContentItem = ({
                 />
             )
         }
-    }
+    }, [isLoading, hasError, type, contentUrl, name, element_id, handleError, handleLoad, iframeRef]);
+
+    const RenderControls = useMemo(() => (
+        <div class="m-2 image-button-bar">
+            {type == "image" && (
+                <ButtonImg
+                    m1
+                    tooltip
+                    data-tooltip={T("S186")}
+                    icon={<Aperture />}
+                    onclick={() => {
+                        // Handle screenshot functionality here
+                    }}
+                />
+            )}
+            {parseInt(refreshtime) > 0 && type !== "extension" && (
+                <ButtonImg
+                    m1
+                    tooltip
+                    data-tooltip={isPaused ? T("S185") : T("S184")}
+                    icon={isPaused ? <Play /> : <Pause />}
+                    onclick={() => setPause(!isPaused)}
+                />
+            )}
+            <button id={"refresh_"+id} onclick={() => loadContent(true)} style="display:none">Refresh</button>
+        </div>
+    ), [type, refreshtime, isPaused, id, loadContent]);
+
     console.log("Rendering element " + id, target)
     return (
         <div id={id} class="extra-contentContainer">
-         <button id={"fullscreen_"+id} onclick={()=>{handleFullScreen()}} style="display:block">Fullscreen</button>
-            {renderContent()}
-            <RenderControls />
+            {renderContent}
+            {RenderControls}
             {target === "panel" && <ContainerHelper id={id} isFullscreen={isFullscreen} />}
         </div>
     )

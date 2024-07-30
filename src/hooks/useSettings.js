@@ -19,7 +19,6 @@
 import { h } from "preact"
 import { useState } from "preact/hooks"
 import { webUIversion } from "../components/App/version"
-import { useSettingsContext } from "../contexts/"
 import {
     espHttpURL,
     getBrowserTime,
@@ -31,6 +30,7 @@ import {
     useUiContext,
     useRouterContext,
     useSettingsContextFn,
+    useSettingsContext
 } from "../contexts"
 import {
     baseLangRessource,
@@ -55,7 +55,7 @@ import { showModal } from "../components/Modal"
  */
 const useSettings = () => {
     const { createNewRequest } = useHttpQueue()
-    const { toasts, modals, connection, uisettings } = useUiContext()
+    const { ui, toasts, modals, connection, uisettings } = useUiContext()
     const { processData } = useTargetContextFn
     const { interfaceSettings, connectionSettings, activity } =
         useSettingsContext()
@@ -312,6 +312,8 @@ const useSettings = () => {
             })
             document.title = connectionSettings.current.Hostname
             setTimeout(initPolling, 2000)
+            console.log("Ui is ready")
+            ui.setReady(true)
         }
         function loadTheme(themepack) {
             if (!themepack) {
