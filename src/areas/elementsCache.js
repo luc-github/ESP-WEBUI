@@ -92,31 +92,6 @@ const elementsCache = {
         return cacheHost.querySelector('#' + id)
     },
 
-    remove: (id) => {
-        const cacheItem = elementsCache.get(id)
-        if (cacheItem) {
-            //due to the way render, each new element has div as parent itself connected to the cache
-            const itemHost = cacheItem.parentNode
-            try {
-                const cacheHost = document.getElementById("elementsCache")
-                if (!cacheHost) return false
-                //sanity check if we have new implementation
-                if (cacheHost == itemHost) return false
-                removeCache = removeChild(cacheHost, itemHost)
-                if (removeCache) {
-                    removeCache.remove()
-                    return true
-                } else {
-                    return false
-                }
-            } catch (error) {
-                console.error(`Error removing element ${id}:`, error)
-                return false
-            }
-        }
-        return false
-    },
-
     updateState: (id, newState) => {
         const element = document.getElementById(id);
         //console.log("Updating state for element " + id)
@@ -125,10 +100,12 @@ const elementsCache = {
             if ('isVisible' in newState) {
                 element.style.display = newState.isVisible ? 'block' : 'none';
                 if (newState.isVisible) {console.log("Element " + id + " is now visible")} else {console.log("Element " + id + " is now hidden")}
+                //TODO: add notification to extension (status: visible/hidden)
             }
-            if ('isFullScreen' in newState) {
+            //Note: isFullScreen is not handled here, it is handled by the FullScreenButton itself
+            /*if ('isFullScreen' in newState) {
                 eventBus.emit('updateState', {id, isFullScreen: newState.isFullScreen})
-            }
+            }*/
             if ('forceRefresh' in newState &&  newState.forceRefresh) {
                 eventBus.emit('updateState', {id, forceRefresh: newState.forceRefresh})
             }

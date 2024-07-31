@@ -18,8 +18,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { useState, useEffect, useCallback, useRef ,useMemo} from "preact/hooks"
-import { espHttpURL,isFullscreenActive } from "../Helpers"
+import { useState, useEffect, useCallback, useRef, useMemo } from "preact/hooks"
+import { espHttpURL } from "../Helpers"
 import { useHttpFn } from "../../hooks"
 import { ButtonImg, ContainerHelper } from "../Controls"
 import { T } from "../Translations"
@@ -72,60 +72,33 @@ const ExtraContentItem = ({
     }, [id])
 
 
-    const handleFullscreenChange = () => {
-        //console.log("Handling fullscreen change for " + id)
-        if (isFullscreenActive()) {
-           //console.log("Fullscreen activated for " + id)
-        } else {
-            //console.log("Fullscreen deactivated for " + id)
-        }
-    }
-
 
     useEffect(() => {
         const handleUpdateState = (msg) => {
-           
-            if (msg.id === id ){ 
+
+            if (msg.id === id) {
                 //console.log("Handling update state for " + id, "msg:", msg)
-                if(msg.forceRefresh) {
-                //console.log("Refreshing content for " + id)
-                loadContent(true)
+                if (msg.forceRefresh) {
+                    //console.log("Refreshing content for " + id)
+                    loadContent(true)
                 }
-              
+
                 if ('isFullScreen' in msg) {
-                    const elementPanel = document.getElementById(id);
-                    if (msg.isFullScreen) {
-                        elementPanel.style.position = 'fixed';
-                        elementPanel.style.top = '0';
-                        elementPanel.style.left = '0';
-                        elementPanel.style.width = '100%';
-                        elementPanel.style.height = '100%';
-                    } else {
-                        // Rétablir les styles normaux
-                        elementPanel.style.position = 'absolute';
-                        elementPanel.style.top = '';
-                        elementPanel.style.left = '';
-                        elementPanel.style.width = '';
-                        elementPanel.style.height = '';
-                        elementPanel.style.zIndex = '';
-                    }
-                    const element = document.getElementById(id)
-                    document.addEventListener("fullscreenchange", handleFullscreenChange)
-                    element.requestFullscreen()
-                    
+                    //TBD
                 }
             }
         }
         eventBus.on("updateState", handleUpdateState)
         return () => {
             eventBus.off("updateState", handleUpdateState)
-        }})
+        }
+    })
 
     const loadContent = useCallback(() => {
         //do we need to check if is already loading?
         //console.log("Loading content for " + id)
         setIsLoading(true)
-        if (source.startsWith("http") ) {
+        if (source.startsWith("http")) {
             //console.log("Loading URL " + source)
             setContentUrl(source)
             setHasError(false)
@@ -169,7 +142,7 @@ const ExtraContentItem = ({
             })
         }
     }
-    
+
 
     const renderContent = useMemo(() => {
         if (isLoading && type !== "image" && type !== "camera") {
@@ -238,9 +211,10 @@ const ExtraContentItem = ({
     //console.log("Rendering element " + id, target)
     return (
         <div id={id} class="extra-contentContainer">
+            <ContainerHelper id={id} />
             {renderContent}
             {RenderControls}
-           
+
         </div>
     )
 }
