@@ -17,44 +17,44 @@
 */
 import { h } from "preact"
 import { useState, useEffect } from "preact/hooks"
-
 import { useUiContext, useUiContextFn } from "../../contexts"
 
-const isFullScreen = (element) => {
-    return document.fullscreenElement === element
-}
 
-const CloseButton = ({panelId, hideOnFullScreen, onclick }) => {
-    return null
+const CloseButton = ({elementId, hideOnFullScreen, onclick }) => {
     const { panels } = useUiContext()
     const [isFullScreenMode, setIsFullScreenMode] = useState(false)
-
+    //at each render, check if the element is fullscreen
     useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullScreenMode(isFullScreen(panelRef.current))
+        //Handle fullscreen change event
+        const handleFullScreenChange = () => {
+            const element =document.getElementById(elementId)
+            if ( document.getElementById(elementId)) {
+            console.log("Button close Fullscreen state changed for " + elementId)
+            setIsFullScreenMode(document.fullscreenElement==element)
+            }
         }
-
-        document.addEventListener("fullscreenchange", handleFullscreenChange)
-
+         //Add event listener to handle fullscreen change
+        document.addEventListener("fullscreenchange", handleFullScreenChange)
+        //Remove event listener on unmount
         return () => {
             document.removeEventListener(
                 "fullscreenchange",
-                handleFullscreenChange
+                handleFullScreenChange
             )
         }
-    }, [panelRef])
-
+    })
+    //Hide the button if fullscreen mode is active and hideOnFullScreen is true
     if (hideOnFullScreen && isFullScreenMode) {
         return null
     }
-
+    //display the button according to the props
     return (
         <span
             class="btn btn-clear btn-close m-1"
             aria-label="Close"
             onclick={(e) => {
                 useUiContextFn.haptic()
-                panels.hide(panelId)
+                panels.hide(elementId)
                 if (onclick) {
                     onclick()
                 }
