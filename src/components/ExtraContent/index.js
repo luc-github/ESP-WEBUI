@@ -108,7 +108,8 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     }
 
     const PanelRenderControls = () => (
-        <div class="m-2 image-button-bar">
+        <span class="full-height">
+      
             <ButtonImg
                 xs
                 m1
@@ -116,7 +117,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                 icon={<RefreshCcw size="0.8rem" />}
                 onclick={handleRefresh}
             />
-            <span class="full-height">
+           
                 <FullScreenButton
                     elementId={extra_content_id}
                     onclick={handleFullScreen}
@@ -125,8 +126,9 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                     elementId={id}
                     hideOnFullScreen={true}
                 />
-            </span>
-        </div>
+            
+       
+        </span>
     )
 
     const PageRenderControls = () => (
