@@ -19,11 +19,13 @@
 */
 import { Fragment, h } from "preact"
 import { useState, useEffect, useCallback, useRef ,useMemo} from "preact/hooks"
-import { espHttpURL } from "../Helpers"
+import { espHttpURL,isFullscreenActive } from "../Helpers"
 import { useHttpFn } from "../../hooks"
 import { ButtonImg, ContainerHelper } from "../Controls"
 import { T } from "../Translations"
 import { Play, Pause, Aperture } from "preact-feather"
+import { eventBus } from "../../hooks/eventBus"
+
 
 const ExtraContentItem = ({
     id,
@@ -37,12 +39,11 @@ const ExtraContentItem = ({
     const [hasError, setHasError] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [isPaused, setPause] = useState(false)
-    const [isFullscreen, setIsFullscreen] = useState(false)
     const { createNewRequest } = useHttpFn
     const element_id = id.replace("extra_content_", type)
     const iframeRef = useRef(null)
 
-    console.log("ExtraContentItem id", id)
+    //console.log("ExtraContentItem id", id)
 
     const handleContentSuccess = useCallback((result) => {
         let blob
@@ -70,12 +71,62 @@ const ExtraContentItem = ({
         setIsLoading(false)
     }, [id])
 
+
+    const handleFullscreenChange = () => {
+        //console.log("Handling fullscreen change for " + id)
+        if (isFullscreenActive()) {
+           //console.log("Fullscreen activated for " + id)
+        } else {
+            //console.log("Fullscreen deactivated for " + id)
+        }
+    }
+
+
+    useEffect(() => {
+        const handleUpdateState = (msg) => {
+           
+            if (msg.id === id ){ 
+                //console.log("Handling update state for " + id, "msg:", msg)
+                if(msg.forceRefresh) {
+                //console.log("Refreshing content for " + id)
+                loadContent(true)
+                }
+              
+                if ('isFullScreen' in msg) {
+                    const elementPanel = document.getElementById(id);
+                    if (msg.isFullScreen) {
+                        elementPanel.style.position = 'fixed';
+                        elementPanel.style.top = '0';
+                        elementPanel.style.left = '0';
+                        elementPanel.style.width = '100%';
+                        elementPanel.style.height = '100%';
+                    } else {
+                        // Rétablir les styles normaux
+                        elementPanel.style.position = 'absolute';
+                        elementPanel.style.top = '';
+                        elementPanel.style.left = '';
+                        elementPanel.style.width = '';
+                        elementPanel.style.height = '';
+                        elementPanel.style.zIndex = '';
+                    }
+                    const element = document.getElementById(id)
+                    document.addEventListener("fullscreenchange", handleFullscreenChange)
+                    element.requestFullscreen()
+                    
+                }
+            }
+        }
+        eventBus.on("updateState", handleUpdateState)
+        return () => {
+            eventBus.off("updateState", handleUpdateState)
+        }})
+
     const loadContent = useCallback(() => {
         //do we need to check if is already loading?
-        console.log("Loading content for " + id)
+        //console.log("Loading content for " + id)
         setIsLoading(true)
         if (source.startsWith("http") ) {
-            console.log("Loading URL " + source)
+            //console.log("Loading URL " + source)
             setContentUrl(source)
             setHasError(false)
             setIsLoading(false)
@@ -97,13 +148,13 @@ const ExtraContentItem = ({
     }, [loadContent])
 
     const handleError = () => {
-        console.log("Error loading content for " + id)
+        //console.log("Error loading content for " + id)
         setHasError(true)
         setIsLoading(false)
     }
 
     const handleLoad = () => {
-        console.log("Load done for " + id)
+        //console.log("Load done for " + id)
         setHasError(false)
         setIsLoading(false)
 
@@ -118,11 +169,7 @@ const ExtraContentItem = ({
             })
         }
     }
-    const handleFullScreen = () => {     
-        setIsFullscreen(!isFullscreen)
-        const element = document.getElementById(id)
-        element.requestFullscreen()
-    }
+    
 
     const renderContent = useMemo(() => {
         if (isLoading && type !== "image" && type !== "camera") {
@@ -185,16 +232,15 @@ const ExtraContentItem = ({
                     onclick={() => setPause(!isPaused)}
                 />
             )}
-            <button id={"refresh_"+id} onclick={() => loadContent(true)} style="display:none">Refresh</button>
         </div>
     ), [type, refreshtime, isPaused, id, loadContent]);
 
-    console.log("Rendering element " + id, target)
+    //console.log("Rendering element " + id, target)
     return (
         <div id={id} class="extra-contentContainer">
             {renderContent}
             {RenderControls}
-            {target === "panel" && <ContainerHelper id={id} isFullscreen={isFullscreen} />}
+           
         </div>
     )
 }

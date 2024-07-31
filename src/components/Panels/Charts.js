@@ -351,7 +351,6 @@ const Legendes = ({ index, temperatures, temperaturesList }) => {
 const ChartsPanel = () => {
     const { temperatures, temperaturesList, sensor, sensorList } =
         useTargetContext()
-    const panelRef = useRef(null)
     charts[0].ref = useRef(null)
     charts[1].ref = useRef(null)
     charts[1].ref = useRef(null)
@@ -395,7 +394,7 @@ const ChartsPanel = () => {
         updateCharts(2, sensor)
     }, [sensor])
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id} >
          <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -406,12 +405,10 @@ const ChartsPanel = () => {
                     <span class="H-100">
                         <PanelMenu items={menu} />
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

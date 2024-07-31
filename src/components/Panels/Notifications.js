@@ -48,7 +48,6 @@ const NotificationsPanel = () => {
     const messagesEndRef = useRef(null)
     const notificationsOutput = useRef(null)
     const id = "notificationsPanel"
-    const panelRef = useRef(null)
 
     const scrollToBottom = () => {
         if (
@@ -108,7 +107,7 @@ const NotificationsPanel = () => {
     console.log("Notifications panel")
 
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -119,12 +118,10 @@ const NotificationsPanel = () => {
                     <span class="full-height">
                         <PanelMenu items={menu} />
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

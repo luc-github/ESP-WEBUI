@@ -79,7 +79,6 @@ const JogPanel = () => {
     )
     const [moveToTitleZ, setMoveToTitleZ] = useState(T("P75") + movetoZ)
     const id = "jogPanel"
-    const panelRef = useRef(null)
     console.log(id)
 
     //Send a request to the ESP
@@ -363,7 +362,7 @@ const JogPanel = () => {
     label_v_axis_top = V_axis_top_dir + V_axis
 
     return (
-        <div id={id} class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id} >
             <ContainerHelper id={id} />
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -374,12 +373,10 @@ const JogPanel = () => {
                     <span class="H-100">
                         <PanelMenu items={menu} />
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

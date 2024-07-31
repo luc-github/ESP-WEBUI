@@ -110,7 +110,6 @@ const JogPanel = () => {
     const { positions } = useTargetContext()
     const id = "jogPanel"
     console.log(id)
-    const panelRef = useRef(null)
     //Send a request to the ESP
     const SendCommand = (command) => {
         createNewRequest(
@@ -353,7 +352,7 @@ const JogPanel = () => {
         currentSteps = useUiContextFn.getValue("steps")
     }, [])
     return (
-        <div id={id} class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -404,12 +403,10 @@ const JogPanel = () => {
                             </ul>
                         </div>
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

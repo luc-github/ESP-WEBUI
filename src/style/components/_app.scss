@@ -41,19 +41,7 @@ body {
     }
 }
 
-.toasts-container {
-    position: fixed;
-    z-index: 99999;
-    right: 0.5rem;
-    top: 0.5rem;
 
-    > .toast {
-        margin: 0.2rem 0;
-    }
-}
-:fullscreen .toasts-container{
-    top: 1.2rem;
-}
 
 .footer-container {
     height: 1rem;

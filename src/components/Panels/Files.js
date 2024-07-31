@@ -650,11 +650,9 @@ const FilesPanel = () => {
         setMenu(newMenu())
     }, [fileSystem])
 
-    const panelRef = useRef(null)
-
     console.log(id)
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <input
                 type="file"
                 ref={fileref}
@@ -674,12 +672,10 @@ const FilesPanel = () => {
                             <PanelMenu items={menu} />
                         )}
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

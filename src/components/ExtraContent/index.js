@@ -102,9 +102,9 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     }
 
     const handleFullScreen = () => {
-        setIsFullScreen(!isFullScreen)
+       /* setIsFullScreen(true)
         console.log("Toggling fullscreen for element " + extra_content_id)
-        elementsCache.updateState(extra_content_id, { isFullScreen: !isFullScreen })
+        elementsCache.updateState(extra_content_id, { isFullScreen: true })*/
     }
 
     const PanelRenderControls = () => (
@@ -118,12 +118,12 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
             />
             <span class="full-height">
                 <FullScreenButton
-                    panelId={extra_content_id}
+                    elementId={extra_content_id}
                     onclick={handleFullScreen}
                 />
-     <CloseButton
-                    panelRef={containerRef}
-                    panelId={id}
+                <CloseButton
+                    elementId={id}
+                    hideOnFullScreen={true}
                 />
             </span>
         </div>
@@ -139,7 +139,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
             />
            
                 <FullScreenButton
-                    panelId={extra_content_id}
+                    elementId={extra_content_id}
                     onclick={handleFullScreen}
                     asButton={true}
                 />

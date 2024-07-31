@@ -37,10 +37,9 @@ const ModalContainer = ({ id }) => {
         modals.modalList.length > 0 &&
         id === "top_modals_container"
     ) {
-        const fullScreenElement = getFullscreenElement()
         disableUI(
             true,
-            fullScreenElement ? "modal_" + fullScreenElement.id : null
+      null
         )
     }
     return (
@@ -49,15 +48,7 @@ const ModalContainer = ({ id }) => {
                 modals.modalList.length > 0 &&
                 modals.modalList.map((modal, index) => {
                     const modalSize = modal.size || "sm"
-                    const divRef = document.fullscreenElement
-                    console.log("Active modal", divRef)
-                    if (
-                        divRef &&
-                        (id === "top_modals_container" ||
-                            "modal_" + divRef.id != id)
-                    ) {
-                        return null
-                    }
+                    
                     return (
                         <SpectreModal
                             class={`active`}

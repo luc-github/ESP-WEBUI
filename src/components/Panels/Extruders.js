@@ -241,9 +241,8 @@ const ExtrudersPanel = () => {
         },
     ]
     console.log(id)
-    const panelRef = useRef(null)
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -254,12 +253,10 @@ const ExtrudersPanel = () => {
                     <span class="H-100">
                         <PanelMenu items={menu} />
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

@@ -272,7 +272,6 @@ const TemperatureInputControl = ({ tool, index, size }) => {
 }
 
 const TemperaturesPanel = () => {
-    const panelRef = useRef(null)
     const { temperatures } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const sendCommand = (command) => {
@@ -298,7 +297,7 @@ const TemperaturesPanel = () => {
         if (temperatures[tool].length != 0) hasTemp = true
     })
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -308,12 +307,10 @@ const TemperaturesPanel = () => {
                 <span class="navbar-section">
                     <span class="full-height">
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

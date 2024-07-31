@@ -24,7 +24,8 @@ const isFullScreen = (element) => {
     return document.fullscreenElement === element
 }
 
-const CloseButton = ({ panelRef, panelId, hideOnFullScreen, callbackfn }) => {
+const CloseButton = ({panelId, hideOnFullScreen, onclick }) => {
+    return null
     const { panels } = useUiContext()
     const [isFullScreenMode, setIsFullScreenMode] = useState(false)
 
@@ -54,8 +55,8 @@ const CloseButton = ({ panelRef, panelId, hideOnFullScreen, callbackfn }) => {
             onclick={(e) => {
                 useUiContextFn.haptic()
                 panels.hide(panelId)
-                if (callbackfn) {
-                    callbackfn()
+                if (onclick) {
+                    onclick()
                 }
             }}
         />

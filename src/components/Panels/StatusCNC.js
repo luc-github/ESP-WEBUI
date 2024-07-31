@@ -122,7 +122,6 @@ const StatusPanel = () => {
     const { status, states, pinsStates, streamStatus } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "statusPanel"
-    const panelRef = useRef(null)
     const buttonsList = [
         {
             name: "CN40",
@@ -231,7 +230,7 @@ const StatusPanel = () => {
     }
 
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -241,12 +240,10 @@ const StatusPanel = () => {
                 <span class="navbar-section">
                     <span class="full-height">
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

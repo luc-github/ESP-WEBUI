@@ -28,8 +28,7 @@ import {
     WsContextProvider,
 } from "../../contexts"
 import { TargetContextProvider } from "../../targets"
-import { ToastsContainer } from "../Toast"
-import { ModalContainer } from "../Modal"
+import { ContainerHelper } from "../Controls"
 import { ContentContainer } from "../../areas"
 import { ElementsCache } from "../../areas/elementsCache"
 
@@ -44,8 +43,7 @@ const App = () => {
                             <HttpQueueContextProvider>
                                 <SettingsContextProvider>
                                     <WsContextProvider>
-                                        <ToastsContainer id="top_toasts_container"/>
-                                        <ModalContainer id="top_modals_container"/>
+                                        <ContainerHelper id="top_container" active={true}/>
                                         <ElementsCache />
                                         <ContentContainer />
                                     </WsContextProvider>

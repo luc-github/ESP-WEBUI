@@ -172,7 +172,6 @@ const StatusPanel = () => {
     //console.log(status, streamStatus)
     const { createNewRequest } = useHttpFn
     const id = "statusPanel"
-    const panelRef = useRef(null)
 
     const deviceList = [
         {
@@ -298,7 +297,7 @@ const StatusPanel = () => {
         return true
     }
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -308,12 +307,9 @@ const StatusPanel = () => {
                 <span class="navbar-section">
                     <span class="full-height">
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
-                        />
+                            elementId={id}/>
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

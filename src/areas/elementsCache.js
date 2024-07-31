@@ -22,6 +22,7 @@ import { h, render } from "preact"
 import { useState, useEffect, useMemo } from "preact/hooks"
 import { ExtraContentItem } from "../components/ExtraContent"
 import { useUiContext, useSettingsContext } from "../contexts"
+import {  eventBus } from "../hooks/eventBus"
 
 const ElementsCache = () => {
     const { ui } = useUiContext()
@@ -126,27 +127,10 @@ const elementsCache = {
                 if (newState.isVisible) {console.log("Element " + id + " is now visible")} else {console.log("Element " + id + " is now hidden")}
             }
             if ('isFullScreen' in newState) {
-                if (newState.isFullScreen) {
-                    element.style.position = 'fixed';
-                    element.style.top = '0';
-                    element.style.left = '0';
-                    element.style.width = '100%';
-                    element.style.height = '100%';
-                } else {
-                    // Rétablir les styles normaux
-                    element.style.position = 'absolute';
-                    element.style.top = '';
-                    element.style.left = '';
-                    element.style.width = '';
-                    element.style.height = '';
-                    element.style.zIndex = '';
-                }
+                eventBus.emit('updateState', {id, isFullScreen: newState.isFullScreen})
             }
             if ('forceRefresh' in newState &&  newState.forceRefresh) {
-                const refreshElement = document.getElementById("refresh_" + id)
-                if (refreshElement) {
-                    refreshElement.click()
-                }
+                eventBus.emit('updateState', {id, forceRefresh: newState.forceRefresh})
             }
             return true;
         }

@@ -295,7 +295,6 @@ const ExtraInputControl = ({ element, index, size, pos }) => {
 const ExtraControlsPanel = () => {
     const { temperatures, fanSpeed, flowRate, feedRate } = useTargetContext()
     const id = "extraControlsPanel"
-    const panelRef = useRef(null)
     const inputList = [
         { name: "P91", list: fanSpeed },
         { name: "P92", list: flowRate },
@@ -305,7 +304,7 @@ const ExtraControlsPanel = () => {
     console.log("Extra Controls panel")
 
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id} >
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -315,12 +314,10 @@ const ExtraControlsPanel = () => {
                 <span class="navbar-section">
                     <span class="full-height">
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

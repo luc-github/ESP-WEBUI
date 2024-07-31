@@ -680,5 +680,22 @@ a label {
 
 
 .modals-container {
-    z-index:99999;
+    overlay: auto!important;
+    z-index:100000 !important;
+}
+
+.toasts-container {
+    position: fixed;
+    z-index: 100000 !important;
+    right: 0.5rem;
+    top: 0.5rem;
+
+    > .toast {
+        margin: 0.2rem 0;
+    }
+}
+:fullscreen .toasts-container{
+    top: 1.2rem;
+    z-index: 100000 !important;
+    overlay: auto!important;
 }

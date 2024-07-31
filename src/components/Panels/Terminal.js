@@ -54,7 +54,6 @@ const TerminalPanel = () => {
     )
     const [isAutoScrollPaused, setIsAutoScrollPaused] = useState(false)
     let lastPos = 0
-    const panelRef = useRef(null)
     const inputRef = useRef()
     const messagesEndRef = useRef(null)
     const terminalOutput = useRef(null)
@@ -223,7 +222,7 @@ const TerminalPanel = () => {
     ]
 
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id}/>
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -234,12 +233,10 @@ const TerminalPanel = () => {
                     <span class="full-height">
                         <PanelMenu items={menu} />
                         <FullScreenButton
-                            panelRef={panelRef}
-                            hideOnFullScreen={true}
+                            elementId={id}
                         />
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

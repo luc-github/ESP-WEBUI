@@ -42,7 +42,6 @@ const MacrosPanel = () => {
     const { createNewRequest } = useHttpFn
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const id = "macrosPanel"
-    const panelRef = useRef(null)
     console.log(id)
     const getSDSource = () => {
         for (const source of files.supported) {
@@ -146,7 +145,7 @@ const MacrosPanel = () => {
     }
 
     return (
-        <div class="panel panel-dashboard" id={id} ref={panelRef}>
+        <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
@@ -155,10 +154,9 @@ const MacrosPanel = () => {
                 </span>
                 <span class="navbar-section">
                     <span class="full-height">
-                        <FullScreenButton panelRef={panelRef} />
+                        <FullScreenButton elementId={id}/>
                         <CloseButton
-                            panelRef={panelRef}
-                            panelId={id}
+                            elementId={id}
                             hideOnFullScreen={true}
                         />
                     </span>

@@ -21,11 +21,13 @@ import { Maximize, Minimize } from "preact-feather"
 import { useUiContextFn } from "../../contexts"
 import { ButtonImg } from "."
 
+
 const isFullScreen = (element) => {
     return document.fullscreenElement === element
 }
 
-const FullScreenButton = ({ panelRef,panelId, hideOnFullScreen, asButton, onclick }) => {
+const FullScreenButton = ({elementId, hideOnFullScreen, asButton, onclick }) => {
+    return null
     const [isFullScreenMode, setIsFullScreenMode] = useState(false)
     const getPanelRef = () => {
         if(panelRef) return panelRef.current
@@ -49,20 +51,32 @@ const FullScreenButton = ({ panelRef,panelId, hideOnFullScreen, asButton, onclic
     }, [])
 
     const toggleFullScreen = () => {
+        if (onclick) {
+            onclick()
+        }
+        if (panelId) {
+        } else {
+            
         if (!isFullScreenMode) {//
-            if (onclick) {
-                onclick()
-            }
+           
             if (getPanelRef()){
                 getPanelRef().requestFullscreen()
+                
+                setTimeout(() => {
+                    const mypanel = document.getElementById("terminalPanel")
+                    console.log("Fullscreen activated pour " +mypanel.id);
+                    console.log("z-index:" + mypanel.style.zIndex)
+                }, 5000)
             }
            
             console.log("Fullscreen activated pour " + panelId)
         } else {
             if (document.fullscreenElement) {
+                console.log("Exiting fullscreen for " + panelId)
                 document.exitFullscreen()
             }
         }
+    }
     }
 
     if (hideOnFullScreen && isFullScreenMode) {
