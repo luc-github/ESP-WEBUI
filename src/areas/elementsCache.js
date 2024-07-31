@@ -30,7 +30,7 @@ const ElementsCache = () => {
     const [content, setContent] = useState([])
 
     const extractValues = (entry) => {
-        const result = { id: "extra_content_EXTRAPANEL_" + entry.id };
+        const result = { id: "extra_content_" + entry.id };
         entry.value.forEach(param => {
             result[param.name] = param.value;
         });
@@ -39,7 +39,7 @@ const ElementsCache = () => {
 
     useEffect(() => {
         if (ui.ready && interfaceSettings.current?.settings?.extracontents) {
-            console.log("ElementsCache can now be created")
+            //console.log("ElementsCache can now be created")
             
             const extraContentSettings = interfaceSettings.current.settings.extracontents;
             const extraContentsEntry = extraContentSettings.find(entry => entry.id === 'extracontents');
@@ -47,7 +47,7 @@ const ElementsCache = () => {
             if (extraContentsEntry?.value?.length > 0) {
                 const newContent = extraContentsEntry.value.map(entry => {
                     const item = extractValues(entry)
-                    console.log(item)
+                   // console.log(item)
                     return <ExtraContentItem key={item.id} {...item} />
                 });
                 setContent(newContent);

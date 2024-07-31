@@ -269,7 +269,7 @@ const Dashboard = () => {
                 }, {})
 
                 if (item.target == "panel") {
-                    acc.push(ExtraPanelElement(item, "EXTRAPANEL_" + curr.id))
+                    acc.push(ExtraPanelElement(item,  curr.id))
                 }
                 return acc
             }, [])
@@ -293,7 +293,7 @@ const Dashboard = () => {
                         <span
                             class="dropdown-toggle btn tooltip tooltip-right m-1"
                             tabindex="0"
-                            style="z-index: 10000"
+                            style="z-index: 1000"
                             data-tooltip={T("S187")}
                             onclick={() => {
                                 useUiContextFn.haptic()

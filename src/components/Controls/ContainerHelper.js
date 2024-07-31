@@ -26,7 +26,7 @@ import { eventBus } from "../../hooks/eventBus"
 const ContainerHelper = ({id, active=false}) => {
     
    const  [enabled, setEnabled] = useState(active)
-    console.log("ContainerHelper id", id ,"active", active)
+    //console.log("ContainerHelper id", id ,"active", active)
     useEffect(() => {
         const handleUpdateState = (msg) => {
                 if ('isFullScreen' in msg) {
