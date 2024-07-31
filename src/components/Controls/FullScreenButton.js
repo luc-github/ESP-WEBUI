@@ -16,114 +16,95 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { useState, useEffect } from "preact/hooks"
+import { useState, useEffect, useRef } from "preact/hooks"
 import { Maximize, Minimize } from "preact-feather"
 import { useUiContextFn } from "../../contexts"
 import { ButtonImg } from "."
+import { eventBus } from "../../hooks/eventBus"
 
+const FullScreenButton = ({ elementId, hideOnFullScreen, asButton, onclick }) => {
+    const isFullScreenModeRef = useRef(false)
+    const [isFullScreenMode, setIsFullScreenMode] = useState(isFullScreenModeRef.current)
 
-const isFullScreen = (element) => {
-    return document.fullscreenElement === element
-}
-
-const FullScreenButton = ({elementId, hideOnFullScreen, asButton, onclick }) => {
-    return null
-    const [isFullScreenMode, setIsFullScreenMode] = useState(false)
-    const getPanelRef = () => {
-        if(panelRef) return panelRef.current
-        if (panelId)return document.getElementById(panelId)
-            return null
+    // Set internal state to follow the document.fullscreenElement state
+    function setFullScreenMode(value) {
+        isFullScreenModeRef.current = value
+        setIsFullScreenMode(value)
     }
-    useEffect(() => {
-        const handleFullscreenChange = () => {
-             if(getPanelRef)   
-            setIsFullScreenMode(isFullScreen(getPanelRef))
+
+    //Click handler
+    const handleClick = () => {
+        if (isFullScreenModeRef.current) {
+            exitFullscreen()
+        } else {
+            enterFullscreen()
         }
-
-        document.addEventListener("fullscreenchange", handleFullscreenChange)
-
-        return () => {
-            document.removeEventListener(
-                "fullscreenchange",
-                handleFullscreenChange
-            )
-        }
-    }, [])
-
-    const toggleFullScreen = () => {
         if (onclick) {
             onclick()
         }
-        if (panelId) {
-        } else {
-            
-        if (!isFullScreenMode) {//
-           
-            if (getPanelRef()){
-                getPanelRef().requestFullscreen()
-                
-                setTimeout(() => {
-                    const mypanel = document.getElementById("terminalPanel")
-                    console.log("Fullscreen activated pour " +mypanel.id);
-                    console.log("z-index:" + mypanel.style.zIndex)
-                }, 5000)
-            }
-           
-            console.log("Fullscreen activated pour " + panelId)
-        } else {
-            if (document.fullscreenElement) {
-                console.log("Exiting fullscreen for " + panelId)
-                document.exitFullscreen()
-            }
-        }
-    }
     }
 
-    if (hideOnFullScreen && isFullScreenMode) {
+    //Handle fullscreen change event
+    const handleFullscreenChange = () => {
+        //we actuallyonly care about the event of exiting fullscreen because we control the entering one
+        console.log("Fullscreen state changed to false for " + elementId)
+        if (!document.fullscreenElement) {
+            exitFullscreen()
+        }
+    }
+
+    //Enter fullscreen mode
+    function enterFullscreen() {
+        const element = document.getElementById(elementId)
+        if (element) {
+            eventBus.emit("updateState", { id: elementId, isFullScreen: true })
+            element.requestFullscreen()
+            setFullScreenMode(true)
+            document.addEventListener("fullscreenchange", handleFullscreenChange)
+            console.log("Fullscreen activated for " + elementId)
+        } else {
+            console.log("Element " + elementId + " doesn't exist")
+        }
+    }
+
+    //Exit fullscreen mode
+    function exitFullscreen() {
+        document.removeEventListener(
+            "fullscreenchange",
+            handleFullscreenChange
+        )
+        eventBus.emit("updateState", { id: elementId, isFullScreen: false })
+        if (document.fullscreenElement) document.exitFullscreen()
+        setFullScreenMode(false)
+        console.log("Fullscreen deactivated for " + elementId)
+    }
+
+    //Hide the button if fullscreen mode is active and hideOnFullScreen is true
+    if (hideOnFullScreen && isFullScreenModeRef.current) {
         return null
     }
 
-    if (asButton) {
-        return (
-            <ButtonImg
-                id="btn-screen"
-                m1
-                icon={
-                    isFullScreenMode ? (
-                        <Minimize size="0.8rem" />
-                    ) : (
-                        <Maximize size="0.8rem" />
-                    )
-                }
-                onclick={(e) => {
-                    useUiContextFn.haptic()
-                    toggleFullScreen()
-                    e.target.blur()
-                }}
-            />
-        )
-    } else {
-        return (
-            <ButtonImg
-                xs
-                m1
-                class="btn btn-screen"
-                nomin="yes"
-                icon={
-                    isFullScreenMode ? (
-                        <Minimize size="0.8rem" />
-                    ) : (
-                        <Maximize size="0.8rem" />
-                    )
-                }
-                onclick={(e) => {
-                    useUiContextFn.haptic()
-                    toggleFullScreen()
-                    e.target.blur()
-                }}
-            />
-        )
-    }
+    const commonProps = {
+        icon: isFullScreenMode ? <Minimize size="0.8rem" /> : <Maximize size="0.8rem" />,
+        m1: true,
+    };
+
+    const conditionalProps = asButton
+        ? { id: "btn-screen" }
+        : { xs: true, class: "btn btn-screen", nomin: "yes" };
+        
+    //display the button according to the props
+    return (
+        <ButtonImg
+            {...commonProps}
+            {...conditionalProps}
+            onclick={(e) => {
+                useUiContextFn.haptic();
+                e.target.blur();
+                handleClick();
+            }}
+        />
+    );
 }
 
 export default FullScreenButton
