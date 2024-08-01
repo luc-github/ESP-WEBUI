@@ -21,11 +21,11 @@ import { h, Fragment } from "preact"
 import { useRef, useEffect, useCallback, useState } from "preact/hooks"
 import { elementsCache } from "../../areas/elementsCache"
 import { ExtraContentItem } from "./extraContentItem"
+import { eventBus } from "../../hooks/eventBus"
 import {
     ButtonImg,
     FullScreenButton,
     CloseButton,
-    ContainerHelper,
 } from "../Controls"
 import { T } from "../Translations"
 import { RefreshCcw } from "preact-feather"
@@ -44,33 +44,20 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         if (containerRef.current) {
             const { top, left, width, height } = containerRef.current.getBoundingClientRect()
             //console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
-            elementsCache.updatePosition(extra_content_id, { top, left, width, height })
+            eventBus.emit('updateState', {id: extra_content_id, position: {top, left, width, height}, isVisible: true, from: "extraContent(position)"})
         } else {
             //console.log("Element " + extra_content_id + " doesn't exist")
         }
     }
     
-    updateContentPosition()
     useEffect(() => {
+        console.log("Mount element " + id)
         if (!elementsCache.has(extra_content_id)) {
-            //console.log("Creating element " + extra_content_id," because it doesn't exist")
-            elementsCache.create(extra_content_id, { 
-                id, 
-                source, 
-                type, 
-                label, 
-                target, 
-                refreshtime, 
-                icon,
-                isVisible: true
-            })
+            console.error("Error display element " + extra_content_id," because it doesn't exist")
         } else {
             //console.log("Updating element " + extra_content_id + " because it already exists")
-            elementsCache.updateState(extra_content_id, { isVisible: true})
             updateContentPosition()
         }
-
-        updateContentPosition()
 
         const handleScrollAndResize = () => requestAnimationFrame(updateContentPosition)
      
@@ -89,8 +76,8 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                 main.removeEventListener('resize', handleScrollAndResize)
            }
             window.removeEventListener('resize', handleScrollAndResize)
-            //console.log("Hiding element " + extra_content_id)
-            elementsCache.updateState(extra_content_id, { isVisible: false })
+            console.log("Hiding element " + id)
+            eventBus.emit('updateState', {id: extra_content_id, isVisible: false, from: "extraContent(return)"})
         }
     }, [])
 
@@ -98,7 +85,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     const handleRefresh = () => {
         useUiContextFn.haptic()
         //console.log("Refreshing element " + extra_content_id)
-        elementsCache.updateState(extra_content_id, { forceRefresh: true })
+        eventBus.emit('updateState', {id: extra_content_id, forceRefresh: true, from: "extraContent(refresh)"})
     }
 
 

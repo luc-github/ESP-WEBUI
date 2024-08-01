@@ -18,6 +18,8 @@
 import { h } from "preact"
 import { useState, useEffect } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
+import { eventBus } from "../../hooks/eventBus"
+import { elementsCache } from "../../areas/elementsCache"
 
 
 const CloseButton = ({elementId, hideOnFullScreen, onclick }) => {
@@ -55,6 +57,15 @@ const CloseButton = ({elementId, hideOnFullScreen, onclick }) => {
             onclick={(e) => {
                 useUiContextFn.haptic()
                 panels.hide(elementId)
+                console.log("Close button clicked for element " + elementId)
+                if (elementsCache.isExtraContent(elementId)) { 
+                    console.log("emit for root element " + elementsCache.getIdFromRoot(elementId), " isVisible: false")
+                    eventBus.emit('updateState', {id: elementsCache.getIdFromRoot(elementId), isVisible: false, from: "closeButton"})
+                } else {
+                    console.log("emit for element " + elementId, " isVisible: false")
+                    eventBus.emit('updateState', {id: elementId, isVisible: false, from: "closeButton"})
+                    
+                }
                 if (onclick) {
                     onclick()
                 }

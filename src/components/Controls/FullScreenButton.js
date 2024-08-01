@@ -57,7 +57,7 @@ const FullScreenButton = ({ elementId, hideOnFullScreen, asButton, onclick }) =>
     function enterFullscreen() {
         const element = document.getElementById(elementId)
         if (element) {
-            eventBus.emit("updateState", { id: elementId, isFullScreen: true })
+            eventBus.emit("updateState", { id: elementId, isFullScreen: true, from: "fullScreenButton" })
             element.requestFullscreen()
             setFullScreenMode(true)
             document.addEventListener("fullscreenchange", handleFullscreenChange)
@@ -73,7 +73,7 @@ const FullScreenButton = ({ elementId, hideOnFullScreen, asButton, onclick }) =>
             "fullscreenchange",
             handleFullscreenChange
         )
-        eventBus.emit("updateState", { id: elementId, isFullScreen: false })
+        eventBus.emit("updateState", { id: elementId, isFullScreen: false, from: "fullScreenButton" })
         if (document.fullscreenElement) document.exitFullscreen()
         setFullScreenMode(false)
         console.log("Fullscreen deactivated for " + elementId)

@@ -97,12 +97,31 @@ const ExtraContentItem = ({
 
     useEffect(() => {
         const handleUpdateState = (msg) => {
-            if (msg.id === id) {
-                if (msg.forceRefresh) {
+            if (msg.id == id) { 
+                console.log("Matching message for element " + id)
+                console.log(msg)
+                const element = document.getElementById(id)
+                if ( 'forceRefresh' in msg && msg.forceRefresh) {
                     loadContent()
                 }
                 if ('isVisible' in msg) {
                     setIsVisible(msg.isVisible)
+                    if (element) {
+                        console.log("Updating visibility for element " + id + " to " + msg.isVisible)
+                        element.style.display = msg.isVisible ? 'block' : 'none';
+                    } else {
+                        console.log("Element " + id + " doesn't exist")
+                    }
+
+                }
+                if ('position' in msg) {
+                    console.log("Updating position for element " + id )
+                    console.log(msg.position)
+                    const element = document.getElementById(id)
+                    element.style.top = `${msg.position.top}px`;
+                    element.style.left = `${msg.position.left}px`;
+                    element.style.width = `${msg.position.width}px`;
+                    element.style.height = `${msg.position.height}px`;
                 }
             }
         }
