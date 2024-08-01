@@ -143,6 +143,46 @@ const ExtraContentItem = ({
         }
     }
 
+    const captureImage = useCallback(() => {
+        if (type === "camera" || type === "image") {
+            const image = document.getElementById(element_id);
+            if (image && image.complete) {
+                const canvas = document.createElement('canvas');
+                canvas.width = image.naturalWidth;
+                canvas.height = image.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(image, 0, 0);
+                
+                canvas.toBlob((blob) => {
+                    const typeImage = type === "camera" ? "image/jpeg" : blob.type;
+                    const filename = `snap.${typeImage.split("/")[1]}`;
+                    
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // For IE10+
+                        window.navigator.msSaveOrOpenBlob(blob, filename);
+                    } else {
+                        // For modern browsers
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.style.display = "none";
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        
+                        // Clean up
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 100);
+                    }
+                }, type === "camera" ? "image/jpeg" : "image/png");
+            } else {
+                console.error("Image not loaded or not found");
+            }
+        }
+    }, [type, element_id]);
+
 
     const renderContent = useMemo(() => {
         if (isLoading && type !== "image" && type !== "camera") {
@@ -193,9 +233,7 @@ const ExtraContentItem = ({
                     tooltip
                     data-tooltip={T("S186")}
                     icon={<Aperture />}
-                    onclick={() => {
-                        // Handle screenshot functionality here
-                    }}
+                    onclick={captureImage}
                 />
             )}
             {parseInt(refreshtime) > 0 && type !== "extension" && (
