@@ -210,7 +210,7 @@ const ExtraContentItem = ({
 
     //console.log("Rendering element " + id, target)
     return (
-        <div id={id} class="extra-contentContainer">
+        <div id={id} class="extra-content-container">
             <ContainerHelper id={id} />
             {renderContent}
             {RenderControls}

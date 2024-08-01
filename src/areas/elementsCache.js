@@ -75,12 +75,12 @@ const elementsCache = {
     },
 
     create: (id, props) => {
-        console.log("Got request of Creating element " + id)
+        //console.log("Got request of Creating element " + id)
         if (!elementsCache.has(id)) {
            console.log("Element doesn't exist: " + id)
            return false
         } else {
-            console.log("Element already exists: " + id)
+            //console.log("Element already exists: " + id)
             elementsCache.updateState(id, {"isVisible": true})
             return true
         }
@@ -99,7 +99,7 @@ const elementsCache = {
         if (element) {
             if ('isVisible' in newState) {
                 element.style.display = newState.isVisible ? 'block' : 'none';
-                if (newState.isVisible) {console.log("Element " + id + " is now visible")} else {console.log("Element " + id + " is now hidden")}
+                //if (newState.isVisible) {console.log("Element " + id + " is now visible")} else {console.log("Element " + id + " is now hidden")}
                 //TODO: add notification to extension (status: visible/hidden)
             }
             //Note: isFullScreen is not handled here, it is handled by the FullScreenButton itself

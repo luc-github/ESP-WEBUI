@@ -39,7 +39,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     const extra_content_id = `extra_content_${id}`
     const target_id = `target_${id}`
     const iconsList = { ...iconsTarget, ...iconsFeather }
-    console.log(id)
+    console.log("Extra Content " + id)
     const updateContentPosition = () => {
         if (containerRef.current) {
             const { top, left, width, height } = containerRef.current.getBoundingClientRect()
@@ -53,7 +53,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     updateContentPosition()
     useEffect(() => {
         if (!elementsCache.has(extra_content_id)) {
-            console.log("Creating element " + extra_content_id," because it doesn't exist")
+            //console.log("Creating element " + extra_content_id," because it doesn't exist")
             elementsCache.create(extra_content_id, { 
                 id, 
                 source, 
@@ -65,7 +65,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                 isVisible: true
             })
         } else {
-            console.log("Updating element " + extra_content_id + " because it already exists")
+            //console.log("Updating element " + extra_content_id + " because it already exists")
             elementsCache.updateState(extra_content_id, { isVisible: true})
             updateContentPosition()
         }
@@ -97,7 +97,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
 
     const handleRefresh = () => {
         useUiContextFn.haptic()
-        console.log("Refreshing element " + extra_content_id)
+        //console.log("Refreshing element " + extra_content_id)
         elementsCache.updateState(extra_content_id, { forceRefresh: true })
     }
 
@@ -143,8 +143,8 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     )
 
     if (target === "page") {
-        console.log("Rendering page element " + extra_content_id)
-        console.log("Page Id " + id)
+        //console.log("Rendering page element " + extra_content_id)
+        //console.log("Page Id " + id)
         return (
             <div class = "page-container" id={id}>
             <div id={target_id} ref={containerRef} class="page-target-container">
@@ -157,7 +157,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
 
     if (target === "panel") {
        // console.log("Rendering panel element " + extra_content_id)
-       console.log("Panel Id " + id)
+       //console.log("Panel Id " + id)
         const displayIcon = iconsList[icon] || ""
         return (
             <Fragment>

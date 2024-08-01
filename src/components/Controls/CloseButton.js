@@ -29,7 +29,7 @@ const CloseButton = ({elementId, hideOnFullScreen, onclick }) => {
         const handleFullScreenChange = () => {
             const element =document.getElementById(elementId)
             if ( document.getElementById(elementId)) {
-            console.log("Button close Fullscreen state changed for " + elementId)
+            //console.log("Button close Fullscreen state changed for " + elementId)
             setIsFullScreenMode(document.fullscreenElement==element)
             }
         }
