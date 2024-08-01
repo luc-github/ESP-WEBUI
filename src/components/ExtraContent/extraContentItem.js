@@ -26,7 +26,6 @@ import { T } from "../Translations"
 import { Play, Pause, Aperture } from "preact-feather"
 import { eventBus } from "../../hooks/eventBus"
 
-
 const ExtraContentItem = ({
     id,
     source,
@@ -38,12 +37,12 @@ const ExtraContentItem = ({
     const [contentUrl, setContentUrl] = useState("")
     const [hasError, setHasError] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-    const [isPaused, setPause] = useState(false)
+    const [isPaused, setIsPaused] = useState(false)
+    const [isVisible, setIsVisible] = useState(true)
     const { createNewRequest } = useHttpFn
     const element_id = id.replace("extra_content_", type)
     const iframeRef = useRef(null)
-
-    //console.log("ExtraContentItem id", id)
+    const refreshIntervalRef = useRef(null)
 
     const handleContentSuccess = useCallback((result) => {
         let blob
@@ -71,35 +70,11 @@ const ExtraContentItem = ({
         setIsLoading(false)
     }, [id])
 
-
-
-    useEffect(() => {
-        const handleUpdateState = (msg) => {
-
-            if (msg.id === id) {
-                //console.log("Handling update state for " + id, "msg:", msg)
-                if (msg.forceRefresh) {
-                    //console.log("Refreshing content for " + id)
-                    loadContent(true)
-                }
-
-                if ('isFullScreen' in msg) {
-                    //TBD
-                }
-            }
-        }
-        eventBus.on("updateState", handleUpdateState)
-        return () => {
-            eventBus.off("updateState", handleUpdateState)
-        }
-    })
-
     const loadContent = useCallback(() => {
-        //do we need to check if is already loading?
-        //console.log("Loading content for " + id)
+        if (isPaused || !isVisible) return
+
         setIsLoading(true)
         if (source.startsWith("http")) {
-            //console.log("Loading URL " + source)
             setContentUrl(source)
             setHasError(false)
             setIsLoading(false)
@@ -114,20 +89,46 @@ const ExtraContentItem = ({
                 }
             )
         }
-    }, [id, source, type, createNewRequest, handleContentSuccess, handleContentError])
+    }, [id, source, type, createNewRequest, handleContentSuccess, handleContentError, isPaused, isVisible])
 
     useEffect(() => {
         loadContent()
     }, [loadContent])
 
+    useEffect(() => {
+        const handleUpdateState = (msg) => {
+            if (msg.id === id) {
+                if (msg.forceRefresh) {
+                    loadContent()
+                }
+                if ('isVisible' in msg) {
+                    setIsVisible(msg.isVisible)
+                }
+            }
+        }
+        eventBus.on("updateState", handleUpdateState)
+        return () => {
+            eventBus.off("updateState", handleUpdateState)
+        }
+    }, [id, loadContent])
+
+    useEffect(() => {
+        if (refreshtime > 0 && (type === "camera" || type === "image") && isVisible && !isPaused) {
+            refreshIntervalRef.current = setInterval(loadContent, refreshtime)
+        }
+        return () => {
+            if (refreshIntervalRef.current) {
+                clearInterval(refreshIntervalRef.current)
+            }
+        }
+    }, [refreshtime, type, isVisible, isPaused, loadContent])
+
     const handleError = () => {
-        //console.log("Error loading content for " + id)
         setHasError(true)
         setIsLoading(false)
     }
 
     const handleLoad = () => {
-        //console.log("Load done for " + id)
         setHasError(false)
         setIsLoading(false)
 
@@ -158,10 +159,8 @@ const ExtraContentItem = ({
                     const filename = `snap.${typeImage.split("/")[1]}`;
                     
                     if (window.navigator.msSaveOrOpenBlob) {
-                        // For IE10+
                         window.navigator.msSaveOrOpenBlob(blob, filename);
                     } else {
-                        // For modern browsers
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement("a");
                         a.style.display = "none";
@@ -170,7 +169,6 @@ const ExtraContentItem = ({
                         document.body.appendChild(a);
                         a.click();
                         
-                        // Clean up
                         setTimeout(() => {
                             document.body.removeChild(a);
                             URL.revokeObjectURL(url);
@@ -183,6 +181,21 @@ const ExtraContentItem = ({
         }
     }, [type, element_id]);
 
+    const togglePause = useCallback(() => {
+        setIsPaused(prevPaused => {
+            const newPausedState = !prevPaused;
+            if (newPausedState) {
+                if (refreshIntervalRef.current) {
+                    clearInterval(refreshIntervalRef.current);
+                }
+            } else {
+                if (refreshtime > 0 && (type === "camera" || type === "image") && isVisible) {
+                    refreshIntervalRef.current = setInterval(loadContent, refreshtime);
+                }
+            }
+            return newPausedState;
+        });
+    }, [refreshtime, type, isVisible, loadContent]);
 
     const renderContent = useMemo(() => {
         if (isLoading && type !== "image" && type !== "camera") {
@@ -223,11 +236,11 @@ const ExtraContentItem = ({
                 />
             )
         }
-    }, [isLoading, hasError, type, contentUrl, name, element_id, handleError, handleLoad, iframeRef]);
+    }, [isLoading, hasError, type, contentUrl, name, element_id, handleError, handleLoad]);
 
     const RenderControls = useMemo(() => (
         <div class="m-2 image-button-bar">
-            {type == "image" && (
+            {(type === "camera" || type === "image") && (
                 <ButtonImg
                     m1
                     tooltip
@@ -236,25 +249,23 @@ const ExtraContentItem = ({
                     onclick={captureImage}
                 />
             )}
-            {parseInt(refreshtime) > 0 && type !== "extension" && (
+            {parseInt(refreshtime) > 0 && (type === "camera" || type === "image") && (
                 <ButtonImg
                     m1
                     tooltip
                     data-tooltip={isPaused ? T("S185") : T("S184")}
                     icon={isPaused ? <Play /> : <Pause />}
-                    onclick={() => setPause(!isPaused)}
+                    onclick={togglePause}
                 />
             )}
         </div>
-    ), [type, refreshtime, isPaused, id, loadContent]);
+    ), [type, refreshtime, isPaused, captureImage, togglePause]);
 
-    //console.log("Rendering element " + id, target)
     return (
         <div id={id} class="extra-content-container">
             <ContainerHelper id={id} />
             {renderContent}
             {RenderControls}
-
         </div>
     )
 }
