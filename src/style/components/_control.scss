@@ -1,5 +1,6 @@
 .image-button-bar {
     text-align: center;
+    height: 3rem;
 }
 .buttons-bar {
     display: flex;
@@ -333,13 +334,33 @@ span.input-group-addon {
 .cameraContainer,
 .imageContainer {
     border: none;
-    width: 100%;
+    overflow: hidden;
+    flex: 1;
     padding: 10px;
+}
+.cameraContainer,
+.imageContainer {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto; /* Centers the image horizontally */
+}
+.picture-container {
+    width: 100%;
+    max-height: calc(100% - 3rem);
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    object-fit: contain;
 }
 .contentContainer,
 .extensionContainer {
-    overflow: hidden;
     height: 100%;
+    width: 100%;
     
 }
 
@@ -352,6 +373,8 @@ span.input-group-addon {
 .extra-content-container {
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
     position:absolute;
     z-index: 9999;
     opacity: 1;
@@ -362,7 +385,9 @@ span.input-group-addon {
     -webkit-user-select:auto!important;
     -ms-user-select: auto!important;
     overflow: hidden;
+    background-color: #fff;
 }
+
 .fallback-content {
     display: none;
     text-align: center; font-size: 1.5rem; background-color: red; color: white; margin-top: 0.5rem;

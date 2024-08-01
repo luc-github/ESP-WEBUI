@@ -160,6 +160,7 @@ const ExtraContentItem = ({
 
         if (type === "camera" || type === "image") {
             return (
+                <div class="picture-container">
                 <img
                     src={contentUrl}
                     alt={name ? name : "image jpeg"}
@@ -168,6 +169,7 @@ const ExtraContentItem = ({
                     onError={handleError}
                     onLoad={handleLoad}
                 />
+                </div>
             )
         } else {
             return (
