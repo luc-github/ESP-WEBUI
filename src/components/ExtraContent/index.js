@@ -34,19 +34,20 @@ import { iconsTarget } from "../../targets"
 import { useUiContextFn } from "../../contexts"
 
 const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) => {
-    const containerRef = useRef(null)
+    
     const [isFullScreen, setIsFullScreen] = useState(false)
     const extra_content_id = `extra_content_${id}`
     const target_id = `target_${id}`
     const iconsList = { ...iconsTarget, ...iconsFeather }
     console.log("Extra Content " + id)
     const updateContentPosition = () => {
-        if (containerRef.current) {
-            const { top, left, width, height } = containerRef.current.getBoundingClientRect()
-            //console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
+        const container = document.getElementById(target_id)
+        if (container) {
+            const { top, left, width, height } = container.getBoundingClientRect()
+            console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
             eventBus.emit('updateState', {id: extra_content_id, position: {top, left, width, height}, isVisible: true, from: "extraContent(position)"})
         } else {
-            //console.log("Element " + extra_content_id + " doesn't exist")
+            console.log("Element " + target_id + " doesn't exist")
         }
     }
     
@@ -55,7 +56,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         if (!elementsCache.has(extra_content_id)) {
             console.error("Error display element " + extra_content_id," because it doesn't exist")
         } else {
-            //console.log("Updating element " + extra_content_id + " because it already exists")
+            console.log("Updating element " + extra_content_id + " because it already exists")
             updateContentPosition()
         }
 
@@ -134,7 +135,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         //console.log("Page Id " + id)
         return (
             <div class = "page-container" id={id}>
-            <div id={target_id} ref={containerRef} class="page-target-container">
+            <div id={target_id}  class="page-target-container">
               {/* content should fit this container */}
             </div>
             <PageRenderControls/>
@@ -159,7 +160,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
                             {PanelRenderControls()}
                         </span>
                     </div>
-                    <div class="panel-body panel-body-dashboard no-margin-no-padding panel-target-container"  ref={containerRef} id={target_id}>
+                    <div class="panel-body panel-body-dashboard no-margin-no-padding panel-target-container"   id={target_id}>
                         {/* content should fit this container */}
                     </div>
                 </div>

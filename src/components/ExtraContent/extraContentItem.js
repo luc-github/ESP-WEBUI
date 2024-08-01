@@ -41,7 +41,6 @@ const ExtraContentItem = ({
     const [isVisible, setIsVisible] = useState(true)
     const { createNewRequest } = useHttpFn
     const element_id = id.replace("extra_content_", type)
-    const iframeRef = useRef(null)
     const refreshIntervalRef = useRef(null)
 
     const handleContentSuccess = useCallback((result) => {
@@ -150,10 +149,10 @@ const ExtraContentItem = ({
     const handleLoad = () => {
         setHasError(false)
         setIsLoading(false)
-
-        if (type === "extension" && iframeRef.current) {
-            const iframe = iframeRef.current
-            const doc = iframe.contentWindow.document
+        const iframeElement = document.getElementById(element_id)
+        if (type === "extension" && iframeElement) {
+           
+            const doc = iframeElement.contentWindow.document
             const body = doc.querySelector("body")
             body.classList.add("body-extension")
             const css = document.querySelectorAll("style")
@@ -246,7 +245,6 @@ const ExtraContentItem = ({
         } else {
             return (
                 <iframe
-                    ref={iframeRef}
                     src={contentUrl}
                     class={type === "extension" ? "extensionContainer" : "contentContainer"}
                     id={element_id}
