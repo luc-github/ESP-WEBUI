@@ -20,7 +20,5 @@
 import { h } from "preact"
 import { useHttpQueue, useHttpFn } from "./useHttpQueue"
 import { useSettings } from "./useSettings"
-import { useEventEmitter  } from "./useEventEmitter"
-import { useEventListener  } from "./useEventListener"
 
-export { useHttpQueue, useSettings, useHttpFn, useEventEmitter, useEventListener }
+export { useHttpQueue, useSettings, useHttpFn}
