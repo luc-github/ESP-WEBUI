@@ -42,6 +42,8 @@ const ExtraContentItem = ({
     const { createNewRequest } = useHttpFn
     const element_id = id.replace("extra_content_", type)
     const refreshIntervalRef = useRef(null)
+    console.log(`Rendering ExtraContentItem ${id} at ${Date.now()}`);
+
 
     const handleContentSuccess = useCallback((result) => {
         let blob
@@ -95,12 +97,13 @@ const ExtraContentItem = ({
     }, [loadContent])
 
     useEffect(() => {
+        const listenerId = `listener_${id}`;
         const handleUpdateState = (msg) => {
             if (msg.id == id) { 
-                console.log("Matching message for element " + id)
-                console.log(msg)
+                console.log(`Received message for ${id} with listener ${listenerId}`, msg);
                 const element = document.getElementById(id)
                 if ( 'forceRefresh' in msg && msg.forceRefresh) {
+                    console.log(`Processing forceRefresh for ${id}`);
                     loadContent()
                 }
                 if ('isVisible' in msg) {
@@ -124,9 +127,10 @@ const ExtraContentItem = ({
                 }
             }
         }
-        eventBus.on("updateState", handleUpdateState)
+        eventBus.on("updateState", handleUpdateState, listenerId)
         return () => {
-            eventBus.off("updateState", handleUpdateState)
+            //console.log(`Removing listener ${listenerId} for ${id}`);
+            //eventBus.off("updateState", handleUpdateState, listenerId)
         }
     }, [id, loadContent])
 
@@ -277,7 +281,7 @@ const ExtraContentItem = ({
             )}
         </div>
     ), [type, refreshtime, isPaused, captureImage, togglePause]);
-
+    console.log("Rendering :" + "<div id=" + id+ " class='extra-content-container'>")
     return (
         <div id={id} class="extra-content-container">
             <ContainerHelper id={id} />

@@ -27,6 +27,7 @@ const ContainerHelper = ({id, active=false}) => {
     
    const  [enabled, setEnabled] = useState(active)
     //console.log("ContainerHelper id", id ,"active", active)
+    const listenerId = `listener_containerhelper_${id}`;
     useEffect(() => {
         const handleUpdateState = (msg) => {
                 if ('isFullScreen' in msg) {
@@ -45,9 +46,9 @@ const ContainerHelper = ({id, active=false}) => {
                  }
                 }
             }
-        eventBus.on("updateState", handleUpdateState)
+        eventBus.on("updateState", handleUpdateState, listenerId)
         return () => {
-            eventBus.off("updateState", handleUpdateState)
+            //eventBus.off("updateState", handleUpdateState,listenerId)
         }})
 
 

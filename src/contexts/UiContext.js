@@ -60,9 +60,10 @@ const UiContextProvider = ({ children }) => {
     notificationsRef.current = notifications
 
     const removeFromVisibles = (id) => {
-        setVisiblePanelsList(
-            visiblePanelsList.filter((element) => element.id != id)
-        )
+        const newlist = visiblePanelsList.filter((element) => element.id != id)
+        console.log("Removing element " + id + " from visible panels list")
+        console.log(visiblePanelsList)
+        setVisiblePanelsList(newlist)
     }
 
     const addToVisibles = (id, fixed) => {
