@@ -327,8 +327,13 @@ const UiContextProvider = ({ children }) => {
         play(seq)
     }
 
+    const isPanelVisible = (id) => {
+        return visiblePanelsList.findIndex((element) => element.id == id) > -1
+    }
+
     useUiContextFn.toasts = { addToast, removeToast, toastList: toasts }
-    useUiContextFn.panels = { hide: removeFromVisibles }
+    useUiContextFn.panels = { hide: removeFromVisibles,isVisible: isPanelVisible }
+
 
     useEffect(() => {
         initAudio()
