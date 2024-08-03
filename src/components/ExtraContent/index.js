@@ -43,8 +43,11 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     console.log("Extra Content " + id)
 
     const updateContentPosition = () => {
-        if (!useUiContextFn.panels.isVisible(id)) return
-        //console.log("Updating position for element " + extra_content_id, "in target", target_id, " of panel ", id)
+        if (!useUiContextFn.panels.isVisible(id)&& target=="panel") {
+            console.log("Not updating position for element " + extra_content_id, "in target", target_id, " of panel ", id, " because it is not visible")
+            return
+        }
+        console.log("Updating position for element " + extra_content_id, "in target", target_id, " of panel ", id)
         const container = document.getElementById(target_id)
         if (container) {
             const { top, left, width, height } = container.getBoundingClientRect()
@@ -83,8 +86,10 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         if (!elementsCache.has(extra_content_id)) {
             console.error("Error display element " + extra_content_id, " because it doesn't exist")
         } else {
-            //console.log("Updating element " + extra_content_id + " because it already exists")
-            updateContentPosition()
+            console.log("Updating element " + extra_content_id + " because it already exists")
+            if (target=="page"){
+                updateContentPosition()
+            }
         }
 
         const main = document.getElementById("main")

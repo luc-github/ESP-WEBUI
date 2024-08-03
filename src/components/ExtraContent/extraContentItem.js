@@ -89,7 +89,7 @@ const ExtraContentItem = ({
             console.log(useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id)))
         }
 
-        if (isPaused || !visibilityState[id] || !useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id))) return
+        if (isPaused || !visibilityState[id] ||  (target=="panel" && !useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id)))) return
         setIsLoading(true)
         if (source.startsWith("http")) {
             setContentUrl(source)
@@ -117,16 +117,16 @@ const ExtraContentItem = ({
         const listenerId = `listener_${id}`;
         const handleUpdateState = (msg) => {
             if (msg.id == id) { 
-                //console.log(`Received message for ${id} with listener ${listenerId}`, msg);
+                console.log(`Received message for ${id} with listener ${listenerId}`, msg);
                 const element = document.getElementById(id)
                 if ( 'forceRefresh' in msg && msg.forceRefresh) {
-                    //console.log(`Processing forceRefresh for ${id}`);
+                    console.log(`Processing forceRefresh for ${id}`);
                     loadContent()
                 }
                 if ('isVisible' in msg) {
                     
                     if (element) {
-                        //console.log("Updating visibility for element " + id + " to " + msg.isVisible)
+                        console.log("Updating visibility for element " + id + " to " + msg.isVisible)
                         element.style.display = msg.isVisible ? 'block' : 'none';
                         //is it the same as the current state?
                         if (visibilityState[id]!= msg.isVisible){
@@ -152,8 +152,8 @@ const ExtraContentItem = ({
 
                 }
                 if ('position' in msg) {
-                    //console.log("Updating position for element " + id )
-                    //console.log(msg.position)
+                    console.log("Updating position for element " + id )
+                    console.log(msg.position)
                     const element = document.getElementById(id)
                     element.style.top = `${msg.position.top}px`;
                     element.style.left = `${msg.position.left}px`;
@@ -164,7 +164,7 @@ const ExtraContentItem = ({
         }
         eventBus.on("updateState", handleUpdateState, listenerId)
         return () => {
-            //console.log(`Removing listener ${listenerId} for ${id}`);
+            console.log(`Removing listener ${listenerId} for ${id}`);
             //eventBus.off("updateState", handleUpdateState, listenerId)
         }
     }, [id, loadContent])

@@ -90,6 +90,8 @@ const UiContextProvider = ({ children }) => {
     }, [panelsList, panelsOrder]);
 
     const isPanelVisible = useCallback((id) => {
+        console.log("Checking visibility for panel " + id)
+        console.log(visiblePanelsListRef.current)
         return visiblePanelsListRef.current.some((element) => element.id == id);
     }, []);
 
