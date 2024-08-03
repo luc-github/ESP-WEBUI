@@ -44,14 +44,14 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
 
     const updateContentPosition = () => {
         if (!useUiContextFn.panels.isVisible(id)) return
-        console.log("Updating position for element " + extra_content_id, "in target", target_id, " of panel ", id)
+        //console.log("Updating position for element " + extra_content_id, "in target", target_id, " of panel ", id)
         const container = document.getElementById(target_id)
         if (container) {
             const { top, left, width, height } = container.getBoundingClientRect()
-            console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
+            //console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
             eventBus.emit('updateState', { id: extra_content_id, position: { top, left, width, height }, isVisible: true, from: "extraContent(position)" })
         } else {
-            console.log("Element " + target_id + " doesn't exist")
+            console.error("Element " + target_id + " doesn't exist")
         }
     }
 
@@ -83,7 +83,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         if (!elementsCache.has(extra_content_id)) {
             console.error("Error display element " + extra_content_id, " because it doesn't exist")
         } else {
-            console.log("Updating element " + extra_content_id + " because it already exists")
+            //console.log("Updating element " + extra_content_id + " because it already exists")
             updateContentPosition()
         }
 
@@ -110,8 +110,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
 
 const handleRefresh = () => {
     useUiContextFn.haptic()
-    console.log("Refreshing element " + extra_content_id)
-    //eventBus.list()
+    //console.log("Refreshing element " + extra_content_id)
     eventBus.emit('updateState', { id: extra_content_id, isVisible: true, forceRefresh: true, from: "extraContent(refresh)-" + Date.now() })
     updateContentPosition()
 }

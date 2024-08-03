@@ -194,6 +194,9 @@ const Dashboard = () => {
         } else {
             //console.log("Init Done")
         }
+        return () => {
+            console.log("Unmount dashboard")
+        }
     }, [])
 
     useEffect(() => {

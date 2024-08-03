@@ -84,7 +84,7 @@ const ExtraContentItem = ({
     }, [id])
 
     const loadContent = useCallback(() => {
-        console.log("Loading content for " + id)
+        //console.log("Loading content for " + id)
         if (isPaused || !visibilityState[id] || !useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id))) return
         setIsLoading(true)
         if (source.startsWith("http")) {
@@ -113,16 +113,16 @@ const ExtraContentItem = ({
         const listenerId = `listener_${id}`;
         const handleUpdateState = (msg) => {
             if (msg.id == id) { 
-                console.log(`Received message for ${id} with listener ${listenerId}`, msg);
+                //console.log(`Received message for ${id} with listener ${listenerId}`, msg);
                 const element = document.getElementById(id)
                 if ( 'forceRefresh' in msg && msg.forceRefresh) {
-                    console.log(`Processing forceRefresh for ${id}`);
+                    //console.log(`Processing forceRefresh for ${id}`);
                     loadContent()
                 }
                 if ('isVisible' in msg) {
                     
                     if (element) {
-                        console.log("Updating visibility for element " + id + " to " + msg.isVisible)
+                        //console.log("Updating visibility for element " + id + " to " + msg.isVisible)
                         element.style.display = msg.isVisible ? 'block' : 'none';
                         //is it the same as the current state?
                         if (visibilityState[id]!= msg.isVisible){
@@ -143,13 +143,13 @@ const ExtraContentItem = ({
                             }
 
                     } else {
-                        console.log("Element " + id + " doesn't exist")
+                        console.error("Element " + id + " doesn't exist")
                     }
 
                 }
                 if ('position' in msg) {
-                    console.log("Updating position for element " + id )
-                    console.log(msg.position)
+                    //console.log("Updating position for element " + id )
+                    //console.log(msg.position)
                     const element = document.getElementById(id)
                     element.style.top = `${msg.position.top}px`;
                     element.style.left = `${msg.position.left}px`;
@@ -175,6 +175,7 @@ const ExtraContentItem = ({
             }
         }
     }, [refreshtime, type, isPaused, loadContent])
+
 
     const handleError = () => {
         setHasError(true)
@@ -314,7 +315,6 @@ const ExtraContentItem = ({
             )}
         </div>
     ), [type, refreshtime, isPaused, captureImage, togglePause]);
-    console.log("Rendering :" + "<div id=" + id+ " class='extra-content-container'>")
     return (
         <div id={id} class="extra-content-container">
             <ContainerHelper id={id} />
