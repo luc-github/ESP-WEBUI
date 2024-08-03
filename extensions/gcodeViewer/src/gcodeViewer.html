@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    const gcodeView_version = "1.0.0"
+    const gcodeViewer_version = "1.0.0"
     // The code use batch processing to avoid memory overflow
     // The code use async/await to avoid blocking the UI due to some long process
     // The code is standalone does not need any external library like Three.js or similar to limit the size of the code
@@ -59,7 +59,7 @@
     let verticesPerLayer
 
     // UI state
-    let showNonExtrusionMoves = false
+    let showTravels = false
     let startLayer = 0
     let endLayer = Infinity
     let invertXY = false
@@ -85,6 +85,7 @@
     let currentCameraDistance = initialCameraDistance
 
     // Mouse
+    let controlRendering = true
     let mouseDown = false
     let lastMouseX = 0
     let lastMouseY = 0
@@ -635,8 +636,8 @@
         upVector = [mvMatrix[1], mvMatrix[5], mvMatrix[9]]
         currentCameraDistance = Math.sqrt(
             cameraPosition[0] * cameraPosition[0] +
-                cameraPosition[1] * cameraPosition[1] +
-                cameraPosition[2] * cameraPosition[2]
+            cameraPosition[1] * cameraPosition[1] +
+            cameraPosition[2] * cameraPosition[2]
         )
     }
 
@@ -676,7 +677,11 @@
         }
         if (gl.isContextLost()) {
             console.error("WebGL context is lost")
-            return false
+            gl = initWebGL(canvas)
+            if (gl.isContextLost()) {
+                return false
+            }
+            console.log("WebGL context is recovered")
         }
         if (checkGLError()) {
             return false
@@ -1356,19 +1361,19 @@
         // Dots for drawing an 'X'
         const originalPoints = invertXY
             ? [
-                  [0, 0, 0],
-                  [labelSize, labelSize, 0], // First diagonal
-                  [0, labelSize, 0],
-                  [labelSize, 0, 0], // Second diagonal
-              ]
+                [0, 0, 0],
+                [labelSize, labelSize, 0], // First diagonal
+                [0, labelSize, 0],
+                [labelSize, 0, 0], // Second diagonal
+            ]
             : [
-                  [0, 0, labelSize / 2],
-                  [labelSize / 2, 0, 0], // Left branch
-                  [labelSize, 0, labelSize / 2],
-                  [labelSize / 2, 0, 0], // Right branch
-                  [labelSize / 2, 0, 0],
-                  [labelSize / 2, 0, -labelSize / 2], // Center branch
-              ]
+                [0, 0, labelSize / 2],
+                [labelSize / 2, 0, 0], // Left branch
+                [labelSize, 0, labelSize / 2],
+                [labelSize / 2, 0, 0], // Right branch
+                [labelSize / 2, 0, 0],
+                [labelSize / 2, 0, -labelSize / 2], // Center branch
+            ]
         const xLabelVertices = originalPoints.flatMap((point) => {
             if (invertXY) {
                 return [
@@ -1421,19 +1426,19 @@
         // Dots for drawing an 'Y'
         const originalPoints = invertXY
             ? [
-                  [0, 0, labelSize / 2],
-                  [labelSize / 2, 0, 0], // Left branch
-                  [labelSize, 0, labelSize / 2],
-                  [labelSize / 2, 0, 0], // Right branch
-                  [labelSize / 2, 0, 0],
-                  [labelSize / 2, 0, -labelSize / 2], // Center branch
-              ]
+                [0, 0, labelSize / 2],
+                [labelSize / 2, 0, 0], // Left branch
+                [labelSize, 0, labelSize / 2],
+                [labelSize / 2, 0, 0], // Right branch
+                [labelSize / 2, 0, 0],
+                [labelSize / 2, 0, -labelSize / 2], // Center branch
+            ]
             : [
-                  [0, 0, 0],
-                  [labelSize, labelSize, 0], // First diagonal
-                  [0, labelSize, 0],
-                  [labelSize, 0, 0], // Second diagonal
-              ]
+                [0, 0, 0],
+                [labelSize, labelSize, 0], // First diagonal
+                [0, labelSize, 0],
+                [labelSize, 0, 0], // Second diagonal
+            ]
 
         const yLabelVertices = originalPoints.flatMap((point) => {
             if (invertXY) {
@@ -1487,21 +1492,21 @@
 
         const originalPoints = invertFrontBack
             ? [
-                  [zLabelSize, 0, 0],
-                  [0, 0, 0],
-                  [0, 0, 0],
-                  [zLabelSize, 0, zLabelSize],
-                  [zLabelSize, 0, zLabelSize],
-                  [0, 0, zLabelSize],
-              ]
+                [zLabelSize, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [zLabelSize, 0, zLabelSize],
+                [zLabelSize, 0, zLabelSize],
+                [0, 0, zLabelSize],
+            ]
             : [
-                  [0, 0, 0],
-                  [zLabelSize, 0, 0],
-                  [zLabelSize, 0, 0],
-                  [0, 0, zLabelSize],
-                  [0, 0, zLabelSize],
-                  [zLabelSize, 0, zLabelSize],
-              ]
+                [0, 0, 0],
+                [zLabelSize, 0, 0],
+                [zLabelSize, 0, 0],
+                [0, 0, zLabelSize],
+                [0, 0, zLabelSize],
+                [zLabelSize, 0, zLabelSize],
+            ]
 
         const zLabelVertices = originalPoints.flatMap((point) => {
             if (invertXY) {
@@ -1544,6 +1549,7 @@
 
     // Cleanup the GCode object buffers
     function cleanupGCodeBuffers() {
+        useProgram(programGCodeInfo, programGridInfo)
         if (programGCodeInfo.buffers) {
             programGCodeInfo.buffers.forEach((buffer) => {
                 gl.deleteBuffer(buffer.vertexBuffer)
@@ -1552,6 +1558,19 @@
             })
         }
         programGCodeInfo.buffers = []
+        programGCodeInfo.visibleBuffers = [];
+        programGCodeInfo.totalVisibleVertices = 0;
+        if (window.gc) {
+            window.gc();
+        } else if (window.opera && window.opera.collect) {
+            window.opera.collect();
+        } else {
+            try {
+                window.CollectGarbage();
+            } catch (e) {
+                //no collect garbage
+            }
+        }
     }
 
     //Draw Functions
@@ -2009,8 +2028,8 @@
             }
             let length = Math.sqrt(
                 direction.x * direction.x +
-                    direction.y * direction.y +
-                    direction.z * direction.z
+                direction.y * direction.y +
+                direction.z * direction.z
             )
             let normal = {
                 x: direction.x / length,
@@ -2130,12 +2149,12 @@
         gcode_vertices = []
         gcode_colors = []
         gcode_normals = []
-        programGCodeInfo.buffers = [] 
+        programGCodeInfo.buffers = []
 
         visiblePoints = gcodePoints
             .filter(
                 (point) =>
-                    (showNonExtrusionMoves || point.moveType === "extrude") &&
+                    (showTravels || point.moveType === "extrude") &&
                     point.layer >= startLayer &&
                     point.layer <= endLayer
             )
@@ -2237,68 +2256,68 @@
                         point.start.x +
                         ((bitangent[0] * cos1 + tangent[0] * sin1) *
                             lineWidth) /
-                            2,
+                        2,
                     y:
                         point.start.y +
                         ((bitangent[1] * cos1 + tangent[1] * sin1) *
                             lineWidth) /
-                            2,
+                        2,
                     z:
                         point.start.z +
                         ((bitangent[2] * cos1 + tangent[2] * sin1) *
                             lineWidth) /
-                            2,
+                        2,
                 }
                 const v2 = {
                     x:
                         point.start.x +
                         ((bitangent[0] * cos2 + tangent[0] * sin2) *
                             lineWidth) /
-                            2,
+                        2,
                     y:
                         point.start.y +
                         ((bitangent[1] * cos2 + tangent[1] * sin2) *
                             lineWidth) /
-                            2,
+                        2,
                     z:
                         point.start.z +
                         ((bitangent[2] * cos2 + tangent[2] * sin2) *
                             lineWidth) /
-                            2,
+                        2,
                 }
                 const v3 = {
                     x:
                         point.end.x +
                         ((bitangent[0] * cos1 + tangent[0] * sin1) *
                             lineWidth) /
-                            2,
+                        2,
                     y:
                         point.end.y +
                         ((bitangent[1] * cos1 + tangent[1] * sin1) *
                             lineWidth) /
-                            2,
+                        2,
                     z:
                         point.end.z +
                         ((bitangent[2] * cos1 + tangent[2] * sin1) *
                             lineWidth) /
-                            2,
+                        2,
                 }
                 const v4 = {
                     x:
                         point.end.x +
                         ((bitangent[0] * cos2 + tangent[0] * sin2) *
                             lineWidth) /
-                            2,
+                        2,
                     y:
                         point.end.y +
                         ((bitangent[1] * cos2 + tangent[1] * sin2) *
                             lineWidth) /
-                            2,
+                        2,
                     z:
                         point.end.z +
                         ((bitangent[2] * cos2 + tangent[2] * sin2) *
                             lineWidth) /
-                            2,
+                        2,
                 }
 
                 currentBatch.vertices.push(
@@ -2404,7 +2423,7 @@
 
         verticesPerLayer = Math.ceil(
             gcode_vertices.reduce((sum, batch) => sum + batch.length, 0) /
-                (endLayer - startLayer + 1)
+            (endLayer - startLayer + 1)
         )
         //console.log(`Vertices per layer: ${verticesPerLayer}`);
         //console.log(`Total vertices: ${gcode_vertices.reduce((sum, batch) => sum + batch.length, 0)}`);
@@ -2478,14 +2497,14 @@
                     startVertex = Math.floor(
                         ((startLayer - buffer.firstLayer) /
                             (buffer.lastLayer - buffer.firstLayer + 1)) *
-                            buffer.vertexCount
+                        buffer.vertexCount
                     )
                 }
                 if (buffer.lastLayer > endLayer) {
                     endVertex = Math.ceil(
                         ((endLayer - buffer.firstLayer + 1) /
                             (buffer.lastLayer - buffer.firstLayer + 1)) *
-                            buffer.vertexCount
+                        buffer.vertexCount
                     )
                 }
 
@@ -2655,6 +2674,9 @@
         document.getElementById("endLayerDisplay").textContent = endLayer
         document.getElementById("startLayerSlider").value = startLayer
         document.getElementById("endLayerSlider").value = endLayer
+        if (gcodePoints.length > 0) {
+            document.getElementById("layers_control").classList.remove("d-none")
+        }
     }
 
     // Auto rotation function
@@ -2713,7 +2735,7 @@
             cancelAnimationFrame(animationFrameId)
             animationFrameId = null
         }
-        document.getElementById("toggleAutoRotation").checked = false
+        updateAutoRotationButton()
     }
 
     // toggleAutoRotation function
@@ -2722,22 +2744,25 @@
             // Stop animation
             cancelAnimationFrame(animationFrameId)
             animationFrameId = null
-            document.getElementById("toggleAutoRotation").checked = false
         } else {
             // Start animation
             lastFrameTime = performance.now()
             animationFrameId = requestAnimationFrame(animate)
-            document.getElementById("toggleAutoRotation").checked = true
         }
         updateAutoRotationButton()
     }
 
     // Update the auto rotation button text
     function updateAutoRotationButton() {
-        const button = document.getElementById("toggleAutoRotation")
-        button.textContent = animationFrameId
-            ? "Stop animation"
-            : "Start animation"
+        const index = getIndexOfIcon(
+            iconsToLoad,
+            animationFrameId ? "CheckCircle" : "Circle"
+        )
+        const menuItem = document.getElementById("animateIcon")
+        if (index && menuItem) {
+            menuItem.innerHTML =
+                loadedIcons[animationFrameId ? "CheckCircle" : "Circle"]
+        }
     }
 
     //invertXY function
@@ -2760,24 +2785,10 @@
         }
     }
 
-    async function toggleFrontBackInversion() {
-        invertFrontBack = document.getElementById("invertFrontBack").checked
-        //console.log("toggleFrontBackInversion:", invertFrontBack);
-        useProgram(programGridInfo, programGridInfo)
-        createZLabelBuffer()
-        // Update the visible points
-        try {
-            setView("front")
-            drawScene()
-        } catch (error) {
-            console.error("Error updating visible points:", error)
-        }
-    }
-
     // Mouse functions
-
     //Mouse down event
     function handleMouseDown(event) {
+        if (!controlRendering) return;
         stopAnimation()
         if (isComputing || isFileProcessing) {
             console.warn(
@@ -2795,6 +2806,7 @@
 
     //Mouse move event
     function handleMouseMove(event) {
+        if (!controlRendering) return;
         if (!mouseDown) {
             return
         }
@@ -2819,6 +2831,7 @@
 
     //Mouse up event
     function handleMouseUp(event) {
+        if (!controlRendering) return;
         mouseDown = false
         isPanning = false
         lastPinchDistance = 0
@@ -2880,6 +2893,7 @@
 
     // handleWheel function
     function handleWheel(event) {
+        if (!controlRendering) return;
         stopAnimation()
         event.preventDefault()
         if (isComputing || isFileProcessing) {
@@ -2988,6 +3002,7 @@
 
     // Handle touch start event
     function handleTouchStart(event) {
+        if (!controlRendering) return;
         event.preventDefault()
         stopAnimation()
         if (event.touches.length === 1) {
@@ -3000,6 +3015,7 @@
 
     // Handle touch move event
     function handleTouchMove(event) {
+        if (!controlRendering) return;
         event.preventDefault()
         stopAnimation()
         if (event.touches.length === 1) {
@@ -3017,11 +3033,13 @@
 
     // Handle touch end event
     function handleTouchEnd(event) {
+        if (!controlRendering) return;
         handleMouseUp(event)
     }
 
     // Handle pinch zoom event
     function handlePinchZoom(newDistance) {
+        if (!controlRendering) return;
         stopAnimation()
         if (lastPinchDistance === 0) {
             lastPinchDistance = newDistance
@@ -3030,7 +3048,7 @@
 
         const delta = lastPinchDistance - newDistance
         handleWheel({
-            preventDefault: () => {},
+            preventDefault: () => { },
             deltaY: delta,
             clientX: 0,
             clientY: 0,
@@ -3045,14 +3063,14 @@
         stopAnimation()
         const canvas = document.getElementById("glCanvas")
         const controls = document.getElementById("controls")
-        const container = document.getElementById("container")
+        const container = document.getElementById("extensionUI-container")
 
         // Get the window dimensions
         const windowWidth = window.innerWidth
         const windowHeight = window.innerHeight
 
         // Define the maximum canvas size (90% of the smallest window dimension)
-        const maxCanvasSize = Math.min(windowWidth, windowHeight) - 20 // 5px for left/right margins
+        const maxCanvasSize = Math.min(windowWidth, windowHeight) - 40 // 5px for left/right margins
 
         // Define the minimum size for the controls (adjust as needed)
         const minControlsSize = 200
@@ -3061,12 +3079,12 @@
 
         if (windowWidth > windowHeight) {
             // Mode landscape
-            canvasSize = Math.min(maxCanvasSize, windowHeight - 20)
+            canvasSize = Math.min(maxCanvasSize, windowHeight - 40)
             controlsHeight = canvasSize
             container.style.flexDirection = "row"
         } else {
             // Mode portrait
-            canvasSize = Math.min(maxCanvasSize, windowWidth - 20)
+            canvasSize = Math.min(maxCanvasSize, windowWidth - 40)
             controlsWidth = canvasSize
             controlsHeight = Math.max(
                 minControlsSize,
@@ -3077,6 +3095,7 @@
 
         // Apply the new dimensions
         canvas.width = canvas.height = canvasSize
+        console.log("Canvas w x h", canvas.width, canvas.height)
         controls.style.width = `${controlsWidth}px`
         controls.style.height = `${controlsHeight}px`
         //draw the scene
@@ -3157,38 +3176,8 @@
             canvas.addEventListener("touchend", handleTouchEnd)
 
             //Button events
-            // Toggle travel moves
-            document
-                .getElementById("toggleNonExtrusion")
-                .addEventListener("change", async function () {
-                    if (isComputing || isFileProcessing) {
-                        //console.log("Computing is already running");
-                        this.checked = !this.checked
-                        return
-                    }
-                    stopAnimation()
-                    if (gcodePoints.length === 0) return
-                    showNonExtrusionMoves = !this.checked
-                    try {
-                        startLayer = 0
-                        endLayer = layers.size - 1
-                        updateLayerDisplay()
-                        await updateVisiblePoints(false)
-                        drawScene()
-                    } catch (error) {
-                        console.error("Error updating visible points:", error)
-                    }
-                })
-            document.getElementById("toggleNonExtrusion").checked =
-                !showNonExtrusionMoves
             const fileInput = document.getElementById("fileInput")
-            const uploadButton = document.getElementById("uploadButton")
             const fileNameSpan = document.getElementById("fileName")
-            const fileSizeSpan = document.getElementById("fileSize")
-
-            uploadButton.addEventListener("click", function () {
-                fileInput.click()
-            })
 
             // Load GCode file
             fileInput.addEventListener("change", function (event) {
@@ -3203,9 +3192,9 @@
                 drawScene()
                 let file = event.target.files[0]
                 if (file) {
-                    fileNameSpan.textContent = file.name
-                    fileSizeSpan.textContent = formatFileSize(file.size)
-
+                    if (fileNameSpan) {
+                        fileNameSpan.textContent = `${file.name} (${formatFileSize(file.size)})`
+                    }
                     loadGCodeFile(file)
                 }
             })
@@ -3249,74 +3238,276 @@
                     updateLayerDisplay()
                     debouncedUpdateAndRedraw()
                 })
-            // Toggle auto rotation
-            document
-                .getElementById("toggleAutoRotation")
-                .addEventListener("change", function () {
-                    if (isComputing || isFileProcessing) {
-                        //console.log("Computing is already running");
-                        this.checked = !this.checked
-                        return
-                    }
-                    toggleAutoRotation()
-                })
-
-            // Toggle invert XY
-            document
-                .getElementById("invertXY")
-                .addEventListener("change", async function () {
-                    if (isComputing || isFileProcessing) {
-                        //console.log("Computing is already running");
-                        this.checked = !this.checked
-                        return
-                    }
-                    stopAnimation()
-                    try {
-                        startLayer = 0
-                        endLayer = layers.size - 1
-                        updateLayerDisplay()
-                        await toggleXYInversion()
-                    } catch (error) {
-                        console.error("Error toggling XY inversion:", error)
-                    }
-                })
-
-            // Toggle invert Front/Back
-            document
-                .getElementById("invertFrontBack")
-                .addEventListener("change", async function () {
-                    if (isComputing || isFileProcessing) {
-                        //console.log("Computing is already running");
-                        this.checked = !this.checked
-                        return
-                    }
-                    stopAnimation()
-                    try {
-                        await toggleFrontBackInversion()
-                    } catch (error) {
-                        console.error(
-                            "Error toggling Front/Back inversion:",
-                            error
-                        )
-                    }
-                })
-
-            document
-                .getElementById("smartZoomToggle")
-                .addEventListener("change", function (event) {
-                    isSmartZoomEnabled = event.target.checked
-                })
-            if (isSmartZoomEnabled)
-                document.getElementById("smartZoomToggle").checked = true
-
-            document
-                .getElementById("wheelInvertToggle")
-                .addEventListener("change", function (event) {
-                    isWheelInverted = event.target.checked
-                })
-            if (isWheelInverted)
-                document.getElementById("wheelInvertToggle").checked = true
+            updateAutoRotationButton()
         }
+    }
+
+    const iconsToLoad = [
+        {
+            icon: "Settings",
+            id: "settingsIcon",
+        },
+        {
+            icon: "Info",
+            id: "aboutIcon",
+        },
+        {
+            icon: "Upload",
+            id: "uploadButtonIcon",
+        },
+        {
+            icon: "List",
+            id: "drop-btn",
+        },
+        {
+            icon: "CheckCircle",
+            id: "CheckCircleIcon",
+        },
+        {
+            icon: "Circle",
+            id: "CircleIcon",
+        },
+    ]
+    const loadedIcons = {}
+    let iconsLoaded = false
+    let settingsLoaded = false
+    const about_text = `<div class='modal-content'>
+<h2>GCode Viewer Extension v${gcodeViewer_version}</h2>
+<p>This ESP3D-WebUI extension  is a WebGL-based G-code viewer designed to provide an interactive and high-performance visualization of G-code files directly in the web browser.</p>
+<p>It offers the following features:</p>
+<ul>
+<li>Real-time 3D rendering of 3D printing toolpaths.</li>
+<li>Efficient loading and processing of large G-code files.</li>
+<li>Intuitive user interface with visualization controls.</li>
+<li>Dynamic filtering of print layers.</li>
+<li>Customizable viewing options (auto-rotation, axis inversion, etc.).</li>
+<li>Performance optimizations for smooth experience even with complex models.</li> 
+</ul>
+<p>
+  Developed by <a href='https://github.com/luc-github/esp3d-webui' target='_blank'>Luc Lebosse</a>. 
+  Licensed under <a href='https://www.gnu.org/licenses/lgpl-3.0.en.html' target='_blank'>LGPL</a>. 
+  Copyright © 2024.
+</p>
+</div>`
+    //About modal msg
+    const about_modal = {
+        type: "modal",
+        target: "webui",
+        id: "gcodeViewer_about",
+        content: {
+            title: "About gcodeViewer",
+            id: "simple_modal",
+            icon: "Info",
+            style: "default",
+            bt1Txt: "S24",
+            response1: "ok",
+            text: about_text,
+            overlay: true,
+        },
+    }
+
+    //Command message format
+    const command_msg = {
+        type: "query",
+        target: "webui",
+        id: "gcodeViewer_command",
+        url: "command",
+        args: { cmd: "" },
+    }
+
+    //Settings storage
+    const currentSettings = {
+        showTravels: false,
+        invertXY: false,
+        invertFrontBack: false,
+        enableSmartZoom: false,
+        invertWheelDirection: false,
+        controlRendering: true,
+    }
+
+    //Settings format
+    const settingsFormat = [
+        {
+            id: "showTravels",
+            type: "boolean",
+            label: "Show Travels",
+            help: "Show/Hide travels without extrusion",
+            value: false,
+        },
+        {
+            id: "invertXY",
+            type: "boolean",
+            label: "Invert X/Y",
+            help: "Invert X/Y axes",
+            value: false,
+        },
+        {
+            id: "invertFrontBack",
+            type: "boolean",
+            label: "Invert Front/Back",
+            help: "Invert Front/Back views",
+            value: false,
+        },
+        {
+            id: "controlRendering",
+            type: "boolean",
+            label: "Enable View Control",
+            help: "Enable View Control",
+            value: true,
+        },
+        {
+            id: "enableSmartZoom",
+            type: "boolean",
+            label: "Enable Smart Zoom",
+            help: "Enable Smart Zoom",
+            value: false,
+        },
+        {
+            id: "invertWheelDirection",
+            type: "boolean",
+            label: "Invert Wheel Direction",
+            help: "Invert Wheel Direction for the Zoom",
+            value: false,
+        },
+    ]
+    //Settings modal msg
+    const settings_modal = {
+        type: "modal",
+        target: "webui",
+        id: "gcodeViewer_settings",
+        content: {
+            title: "GCode Viewer Settings",
+            id: "fields_modal",
+            icon: "Settings",
+            style: "fields",
+            validation: "bt1",
+            bt1Txt: "S61",
+            response1: "update",
+            bt2Txt: "S28",
+            response2: "cancel",
+            fields: settingsFormat,
+            values: currentSettings,
+            hideclose: true,
+        },
+    }
+
+    //Settings modal msg
+    const please_wait_modal = {
+        type: "modal",
+        target: "webui",
+        id: "gcodeViewer_please_wait",
+        content: {
+            title: "GCode Viewer Settings",
+            id: "simple_modal",
+            style: "default",
+            bt1Txt: "S126",
+            response1: "ok",
+            text: "Please wait end of processing. ",
+            overlay: true,
+        },
+    }
+
+    //Request settings
+    const settings_request_msg = {
+        type: "capabilities",
+        target: "webui",
+        id: "extensions",
+        name: "gcodeViewer",
+    }
+
+    //Save data to settings message
+    const save_settings_msg = {
+        type: "extensionsData",
+        target: "webui",
+        id: "gcodeViewer",
+        content: "",
+    }
+
+    //Toast message
+    const toast_msg = {
+        type: "toast",
+        target: "webui",
+        content: { text: "", type: "default" },
+    }
+
+    //Save settings
+    function onSave(settings) {
+        currentSettings.showTravels = settings.showTravels
+        currentSettings.invertXY = settings.invertXY
+        currentSettings.invertFrontBack = settings.invertFrontBack
+        currentSettings.controlRendering = settings.controlRendering
+        currentSettings.enableSmartZoom = settings.enableSmartZoom
+        currentSettings.invertWheelDirection = settings.invertWheelDirection
+        updateSettings()
+        //Todo: Save settings to preferences.json
+        save_settings_msg.content = currentSettings
+        sendMessage(save_settings_msg)
+    }
+
+    function updateSettings() {
+        showLoader()
+        let redraw = false
+        let computeObject = false
+        let computeGrid = false
+        if (invertXY != currentSettings.invertXY) {
+            invertXY = currentSettings.invertXY
+            computeGrid=true;
+            redraw = true;
+            if (gcodePoints.length > 0) {
+                computeObject = true;
+            }
+        }
+        if (showTravels != currentSettings.showTravels) {
+            showTravels = currentSettings.showTravels
+            redraw = true;
+            if (gcodePoints.length > 0) {
+                computeObject = true;
+            }
+        }
+        if (invertFrontBack != currentSettings.invertFrontBack) {
+            invertFrontBack = currentSettings.invertFrontBack
+            computeGrid = true
+            redraw = true
+        }
+        if (currentSettings.controlRendering != controlRendering) {
+            controlRendering = currentSettings.controlRendering ;
+            redraw = true
+        }
+        isSmartZoomEnabled = currentSettings.enableSmartZoom
+        isWheelInverted = currentSettings.invertWheelDirection
+        if (gl && checkglStatus()) {
+            stopAnimation();
+            if (computeGrid) {
+                useProgram(programGridInfo, programGridInfo)
+                updateAxisColors()
+                createAxisLabelsBuffers()
+            }
+            if (computeObject) {
+                useProgram(programGCodeInfo, programGridInfo)
+                // Update the visible points
+                updateVisiblePoints(false)
+            }
+            if (redraw) {
+                setView("front")
+                drawScene();
+            }
+        }
+        hideLoader()
+
+    }
+
+    //Settings modal
+    function settingsFn() {
+        if (isComputing || isFileProcessing) {
+            sendMessage(please_wait_modal)
+        } else {
+            sendMessage(settings_modal)
+        }
+    }
+
+    //About modal
+    function aboutFn() {
+        sendMessage(about_modal)
     }
 
     //Send message to WebUI
@@ -3324,21 +3515,84 @@
         window.parent.postMessage(msg, "*")
     }
 
-     //Load icons from WebUI
-     function loadIcons() {
-        iconsToLoad.forEach(iconName => {
-            sendMessage({ type: 'icon', target: 'webui', id: iconName });
-        });
+    function applySettings(settings) {
+        settingsLoaded = true
+        if (settings != null && Object.keys(settings).length > 2) {
+            currentSettings.showTravels = settings.showTravels
+            currentSettings.invertXY = settings.invertXY
+            currentSettings.invertFrontBack = settings.invertFrontBack
+            currentSettings.controlRendering = settings.controlRendering
+            currentSettings.enableSmartZoom = settings.enableSmartZoom
+            currentSettings.invertWheelDirection = settings.invertWheelDirection
+            updateSettings()
+        } else {
+            console.log("No Settings")
+        }
+        initExtension()
+    }
+
+    //Initialize the extension and add event listeners
+    //Should be called on load and only once
+    function initExtension() {
+        init()
+        hideLoader()
+        console.log("Init extension")
+    }
+
+    //Use loaded icons
+    function useLoadedIcons() {
+        const buttonContainer = document.getElementById("controls")
+        // Create a button for each button definition
+        iconsToLoad.forEach((item) => {
+            const element = document.getElementById(item.id)
+            if (element) {
+                element.innerHTML = loadedIcons[item.icon]
+            }
+        })
+    }
+
+    function containsIcon(icons, iconName) {
+        return icons.some((iconObj) => iconObj.icon === iconName)
+    }
+
+    function getIndexOfIcon(icons, iconName) {
+        return icons.findIndex((iconObj) => iconObj.icon === iconName)
+    }
+
+
+    function processSavingSettings(response) {
+        //Displaying result
+        if (response.status == "success") {
+            toast_msg.content.text = "Settings saved successfully"
+            toast_msg.content.type = "success"
+            sendMessage(toast_msg)
+        } else if (response.status == "error") {
+            toast_msg.content.text = "Error saving settings"
+            toast_msg.content.type = "error"
+            sendMessage(toast_msg)
+        }
+    }
+
+    //Load icons from WebUI
+    function loadIcons() {
+        iconsToLoad.forEach((element) => {
+            sendMessage({ type: "icon", target: "webui", id: element.icon })
+        })
+    }
+
+    function loadSettings() {
+        sendMessage(settings_request_msg)
     }
 
     //Process message from WebUI
     function processMessage(eventMsg) {
         //Check if icons are loaded
+        console.log(eventMsg.data)
         if (!iconsLoaded) {
             if (
                 eventMsg.data.type &&
                 eventMsg.data.id &&
-                iconsToLoad.includes(eventMsg.data.id)
+                containsIcon(iconsToLoad, eventMsg.data.id)
             ) {
                 if (eventMsg.data.type === "icon") {
                     const iconName = eventMsg.data.id
@@ -3359,16 +3613,17 @@
                 eventMsg.data.type === "capabilities" &&
                 eventMsg.data.id === "extensions"
             ) {
-                if (eventMsg.data.content.initiator.name === "click2go") {
+                if (eventMsg.data.content.initiator.name === "gcodeViewer") {
                     applySettings(eventMsg.data.content.response)
                 }
             } else if (
                 eventMsg.data.type &&
-                (!eventMsg.data.id || eventMsg.data.id.startsWith("click2go"))
+                (!eventMsg.data.id ||
+                    eventMsg.data.id.startsWith("gcodeViewer"))
             ) {
                 if (
                     eventMsg.data.type === "modal" &&
-                    eventMsg.data.id === "click2go_settings"
+                    eventMsg.data.id === "gcodeViewer_settings"
                 ) {
                     if (eventMsg.data.content.response === "update") {
                         onSave(eventMsg.data.content.inputData)
@@ -3376,19 +3631,31 @@
                 } // Check if message is a response to a extensionsData for saving settings
                 else if (
                     eventMsg.data.type === "extensionsData" &&
-                    eventMsg.data.id === "click2go"
+                    eventMsg.data.id === "gcodeViewer"
                 ) {
                     processSavingSettings(eventMsg.data.content.response)
                 }
             }
         }
     }
+    function showLoader() {
+        const loader = document.getElementById("loaderContainer")
+        if (loader) {
+            loader.classList.remove("d-none");
+        }
+    }
+
+    function hideLoader() {
+        const loader = document.getElementById("loaderContainer")
+        if (loader) {
+            loader.classList.add("d-none");
+        }
+    }
 
     window.onload = (event) => {
         window.addEventListener("message", processMessage, false)
-        //loadIcons()
-        //loadSettings()
-        init()
+        loadIcons()
+        loadSettings()
     }
 </script>
 <script id="grid-vertex-shader" type="x-shader/x-vertex">
@@ -3464,6 +3731,7 @@
         justify-content: center;
         align-items: center;
     }
+
     #extensionUI-container {
         display: flex;
         flex-direction: column;
@@ -3471,102 +3739,120 @@
         align-items: center;
         width: 100%;
         height: 100%;
-        padding: 20px;
+
         box-sizing: border-box;
     }
+
     #glCanvas {
-        margin: 10px;
+        margin: 0px;
         padding: 0;
+        border: 1px solid rgb(215, 215, 215);
+        max-width: 100%;
+        max-height: calc(100% - 50px);
+    }
+
+    #progressBar {
+        width: 0%;
+        height: 30px;
+        background-color: #4c53af;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+        margin: 5px;
+    }
+
+    #controls {
+        min-height: 2rem;
+    }
+
+    .loader-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 1000;
     }
 </style>
-<div id="extensionUI-container">
+<div id="extensionUI-container" lass="flex-row-between">
+    <div id="loaderContainer" class="loader-container">
+        <div class="loading loading-lg"></div>
+    </div>
+    <div class="flex-cols">
+        <div class="flex-row-between" style="width: 100%; padding-right: 10px">
+            <div class="dropdown">
+                <span class="dropdown-toggle btn m-1" tabindex="0" id="drop-btn" style="z-index: 10000"></span>
+                <ul class="menu">
+                    <li class="menu-item">
+                        <div class="menu-entry" onclick="document.getElementById('fileInput').click()">
+                            <div class="menu-panel-item">
+                                <span class="text-menu-item"> Upload </span>
+                                <span id="uploadButtonIcon"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="menu-item">
+                        <div class="menu-entry" onclick="toggleAutoRotation()">
+                            <div class="menu-panel-item">
+                                <span class="text-menu-item"> Animate </span>
+                                <span id="animateIcon"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="menu-item">
+                        <div class="menu-entry" onclick="settingsFn()">
+                            <div class="menu-panel-item">
+                                <span class="text-menu-item"> Settings </span>
+                                <span id="settingsIcon"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="menu-item">
+                        <div class="menu-entry" onclick="aboutFn()">
+                            <div class="menu-panel-item">
+                                <span class="text-menu-item"> About </span>
+                                <span id="aboutIcon"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="text-primary mt-2" id="fileName"></div>
+        </div>
     <canvas id="glCanvas" width="400" height="400"></canvas>
-    <div id="controls" style="overflow-y: auto">
-        <div
-            id="progressBar"
-            style="
-                width: 0%;
-                height: 30px;
-                background-color: #4caf50;
-                text-align: center;
-                line-height: 30px;
-                color: white;
-            "
-        >
-            0%
+    </div>
+    <div id="controls" class="flex-cols" style="overflow-y: auto">
+        <div style="align-self: stretch">
+            <div id="progressBar">0%</div>
         </div>
-        <div>
-            <input type="checkbox" id="toggleNonExtrusion" />
-            <label for="toggleNonExtrusion">Hide travel moves</label>
+        <div class="btn-group btn-group-block m-1" width="100%">
+            <button class="btn btn-sm" id="frontView">Front</button>
+            <button class="btn btn-sm" id="backView">Back</button>
+            <button class="btn btn-sm" id="leftView">Left</button>
+            <button class="btn btn-sm" id="rightView">Right</button>
+            <button class="btn btn-sm" id="topView">Top</button>
+            <button class="btn btn-sm" id="bottomView">Bottom</button>
+        </div>
+        <div id="layers_control" class="d-none">
+            <div>
+                <label for="startLayerSlider">Start layer: </label>
+                <input type="range" id="startLayerSlider" min="0" max="100" value="0" />
+                <span id="startLayerDisplay">0</span>
+            </div>
+
+            <div>
+                <label for="endLayerSlider">End layer: </label>
+                <input type="range" id="endLayerSlider" min="0" max="100" value="100" />
+                <span id="endLayerDisplay">100</span>
+            </div>
         </div>
 
-        <div>
-            <input type="checkbox" id="toggleAutoRotation" />
-            <label for="toggleAutoRotation">Animate</label>
-        </div>
-        <div>
-            <input type="checkbox" id="invertXY" />
-            <label for="invertXY">Invert X/Y</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="invertFrontBack" />
-            <label for="invertFrontBack">Invert Front/Back</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="smartZoomToggle" />
-            <label for="smartZoomToggle">Enable Smart Zoom</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="wheelInvertToggle" />
-            <label for="wheelInvertToggle">Invert Wheel Direction</label>
-        </div>
-
-        <div id="viewControls">
-            <button id="frontView">Front</button>
-            <button id="backView">Back</button>
-            <button id="leftView">Left</button>
-            <button id="rightView">Right</button>
-            <button id="topView">Top</button>
-            <button id="bottomView">Bottom</button>
-        </div>
-
-        <div>
-            <label for="startLayerSlider">Start layer: </label>
-            <input
-                type="range"
-                id="startLayerSlider"
-                min="0"
-                max="100"
-                value="0"
-            />
-            <span id="startLayerDisplay">0</span>
-        </div>
-
-        <div>
-            <label for="endLayerSlider">End layer: </label>
-            <input
-                type="range"
-                id="endLayerSlider"
-                min="0"
-                max="100"
-                value="100"
-            />
-            <span id="endLayerDisplay">100</span>
-        </div>
-
-        <div id="fileUploadContainer">
-            <input
-                type="file"
-                id="fileInput"
-                accept=".gcode"
-                style="display: none"
-            />
-            <button id="uploadButton">Upload</button>
-            <span id="fileName"></span>
-            <span id="fileSize"></span>
-        </div>
+        <input type="file" id="fileInput" accept=".gcode" style="display: none" />
     </div>
 </div>
