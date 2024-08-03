@@ -21,7 +21,7 @@
 import { h, render } from "preact"
 import { useState, useEffect, useMemo } from "preact/hooks"
 import { ExtraContentItem } from "../components/ExtraContent"
-import { useUiContext, useSettingsContext } from "../contexts"
+import { useUiContext,useUiContextFn, useSettingsContext } from "../contexts"
 import {  eventBus } from "../hooks/eventBus"
 
 const ElementsCache = () => {
@@ -40,15 +40,20 @@ const ElementsCache = () => {
     useEffect(() => {
         if (ui.ready && interfaceSettings.current?.settings?.extracontents) {
             //console.log("ElementsCache can now be created")
-            
+            const isEnabled  = useUiContextFn.getValue("showextracontents")
+            if (!isEnabled) {
+                console.log("ExtraContent are disabled")
+                return
+            }
+            const isVisibleOnStart = useUiContextFn.getValue("openextrapanelsonstart")
             const extraContentSettings = interfaceSettings.current.settings.extracontents;
             const extraContentsEntry = extraContentSettings.find(entry => entry.id === 'extracontents');
-            
+           
             if (extraContentsEntry?.value?.length > 0) {
                 const newContent = extraContentsEntry.value.map(entry => {
                     const item = extractValues(entry)
                    // console.log(item)
-                    return <ExtraContentItem key={item.id} {...item} />
+                    return <ExtraContentItem key={item.id} {...item} isVisibleOnStart={isVisibleOnStart} />
                 });
                 setContent(newContent);
             }
@@ -71,6 +76,10 @@ const elementsCache = {
     isExtraContent: (id) => {
     const itemid = "extra_content_" + id
     return elementsCache.has(itemid)
+    },
+
+    getRootfromId: (id) => {
+        return id.replace("extra_content_", "")
     },
 
     getIdFromRoot: (id) => {

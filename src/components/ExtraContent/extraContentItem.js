@@ -25,6 +25,11 @@ import { ButtonImg, ContainerHelper } from "../Controls"
 import { T } from "../Translations"
 import { Play, Pause, Aperture } from "preact-feather"
 import { eventBus } from "../../hooks/eventBus"
+import { useUiContextFn } from "../../contexts"
+import { elementsCache } from "../../areas/elementsCache"
+
+const visibilityState = {};
+const isLoadedState = {};
 
 const ExtraContentItem = ({
     id,
@@ -33,16 +38,22 @@ const ExtraContentItem = ({
     name,
     target,
     refreshtime,
+    isVisibleOnStart,
 }) => {
     const [contentUrl, setContentUrl] = useState("")
     const [hasError, setHasError] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [isPaused, setIsPaused] = useState(false)
-    const [isVisible, setIsVisible] = useState(true)
     const { createNewRequest } = useHttpFn
     const element_id = id.replace("extra_content_", type)
     const refreshIntervalRef = useRef(null)
     console.log(`Rendering ExtraContentItem ${id} at ${Date.now()}`);
+    if (visibilityState[id] === undefined) {
+        visibilityState[id] = isVisibleOnStart;
+    }
+    if (isLoadedState[id] === undefined) {
+        isLoadedState[id] = false;
+    }
 
 
     const handleContentSuccess = useCallback((result) => {
@@ -69,16 +80,18 @@ const ExtraContentItem = ({
         console.error(`Error loading content for ${id}:`, error)
         setHasError(true)
         setIsLoading(false)
+        isLoadedState[id] = false;
     }, [id])
 
     const loadContent = useCallback(() => {
-        if (isPaused || !isVisible) return
-
+        console.log("Loading content for " + id)
+        if (isPaused || !visibilityState[id] || !useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id))) return
         setIsLoading(true)
         if (source.startsWith("http")) {
             setContentUrl(source)
             setHasError(false)
             setIsLoading(false)
+            isLoadedState[id] = true;
         } else {
             const idquery = type === "content" ? type + id : "download" + id
             createNewRequest(
@@ -90,7 +103,7 @@ const ExtraContentItem = ({
                 }
             )
         }
-    }, [id, source, type, createNewRequest, handleContentSuccess, handleContentError, isPaused, isVisible])
+    }, [id, source, type, createNewRequest, handleContentSuccess, handleContentError, isPaused])
 
     useEffect(() => {
         loadContent()
@@ -107,10 +120,28 @@ const ExtraContentItem = ({
                     loadContent()
                 }
                 if ('isVisible' in msg) {
-                    setIsVisible(msg.isVisible)
+                    
                     if (element) {
                         console.log("Updating visibility for element " + id + " to " + msg.isVisible)
                         element.style.display = msg.isVisible ? 'block' : 'none';
+                        //is it the same as the current state?
+                        if (visibilityState[id]!= msg.isVisible){
+                            //if it is extension, check if the content is loaded
+                            if (type=="extension" && isLoadedState[id]){    
+                                const iframeElement = element.querySelector('iframe.extensionContainer');
+                                if (iframeElement){
+                                    iframeElement.contentWindow.postMessage(
+                                        { type: "notification", content: {isVisible: msg.isVisible}, id },
+                                        "*"
+                                    )
+                                }
+                            }
+                        }
+                        visibilityState[id]= msg.isVisible;
+                        if (!isLoadedState[id] && msg.isVisible) {
+                            loadContent()
+                            }
+
                     } else {
                         console.log("Element " + id + " doesn't exist")
                     }
@@ -135,7 +166,7 @@ const ExtraContentItem = ({
     }, [id, loadContent])
 
     useEffect(() => {
-        if (refreshtime > 0 && (type === "camera" || type === "image") && isVisible && !isPaused) {
+        if (refreshtime > 0 && (type === "camera" || type === "image") && visibilityState[id] && !isPaused) {
             refreshIntervalRef.current = setInterval(loadContent, refreshtime)
         }
         return () => {
@@ -143,16 +174,18 @@ const ExtraContentItem = ({
                 clearInterval(refreshIntervalRef.current)
             }
         }
-    }, [refreshtime, type, isVisible, isPaused, loadContent])
+    }, [refreshtime, type, isPaused, loadContent])
 
     const handleError = () => {
         setHasError(true)
         setIsLoading(false)
+        isLoadedState[id] = false;
     }
 
     const handleLoad = () => {
         setHasError(false)
         setIsLoading(false)
+        isLoadedState[id] = true;
         const iframeElement = document.getElementById(element_id)
         if (type === "extension" && iframeElement) {
            
@@ -211,13 +244,13 @@ const ExtraContentItem = ({
                     clearInterval(refreshIntervalRef.current);
                 }
             } else {
-                if (refreshtime > 0 && (type === "camera" || type === "image") && isVisible) {
+                if (refreshtime > 0 && (type === "camera" || type === "image") && visibilityState[id]) {
                     refreshIntervalRef.current = setInterval(loadContent, refreshtime);
                 }
             }
             return newPausedState;
         });
-    }, [refreshtime, type, isVisible, loadContent]);
+    }, [refreshtime, type, loadContent]);
 
     const renderContent = useMemo(() => {
         if (isLoading && type !== "image" && type !== "camera") {
