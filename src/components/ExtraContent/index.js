@@ -55,7 +55,10 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         }
     }
 
-    const handleScrollAndResize = () => requestAnimationFrame(updateContentPosition)
+    const handleScrollAndResize = useCallback(() => {
+        requestAnimationFrame(updateContentPosition);
+    }, [updateContentPosition]);
+    
     useEffect(() => {
         console.log("Updating element " + extra_content_id + " because visible list changed")
         if (useUiContextFn.panels.isVisible(id)) {
