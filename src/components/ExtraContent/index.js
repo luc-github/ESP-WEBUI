@@ -76,7 +76,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
             
             updateContentPosition()
     }
-    }, [panels.visibles])
+    }, [panels.updateTrigger])
 
     useEffect(() => {
         console.log("Mount element " + id)

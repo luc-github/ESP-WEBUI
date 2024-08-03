@@ -49,7 +49,7 @@ const ExtraContentItem = ({
     const refreshIntervalRef = useRef(null)
     console.log(`Rendering ExtraContentItem ${id} at ${Date.now()}`);
     if (visibilityState[id] === undefined) {
-        visibilityState[id] = isVisibleOnStart;
+        visibilityState[id] = target=="panel" ? isVisibleOnStart : true;
     }
     if (isLoadedState[id] === undefined) {
         isLoadedState[id] = false;
@@ -84,7 +84,11 @@ const ExtraContentItem = ({
     }, [id])
 
     const loadContent = useCallback(() => {
-        //console.log("Loading content for " + id)
+        if (target=="page"){
+            console.log("Loading content for page " + id)
+            console.log(useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id)))
+        }
+
         if (isPaused || !visibilityState[id] || !useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id))) return
         setIsLoading(true)
         if (source.startsWith("http")) {

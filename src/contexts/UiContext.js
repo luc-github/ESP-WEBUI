@@ -17,7 +17,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact"
-import { useContext, useState, useRef, useEffect } from "preact/hooks"
+import { useContext, useState, useRef, useEffect, useCallback } from "preact/hooks"
 import {
     generateUID,
     removeEntriesByIDs,
@@ -35,7 +35,8 @@ const useUiContext = () => useContext(UiContext)
 const UiContextProvider = ({ children }) => {
     const [panelsList, setPanelsList] = useState([])
     const [panelsOrder, setPanelsOrder] = useState([])
-    const [visiblePanelsList, setVisiblePanelsList] = useState([])
+    const visiblePanelsListRef = useRef([]);
+    const [updateTrigger, setUpdateTrigger] = useState(0);
     const uiRefreshPaused = useRef({})
     const timersList = useRef({})
     const [initPanelsVisibles, setInitPanelsVisibles] = useState(false)
@@ -59,36 +60,38 @@ const UiContextProvider = ({ children }) => {
     const notificationsRef = useRef(notifications)
     notificationsRef.current = notifications
 
-    const removeFromVisibles = (id) => {
-        const newlist = visiblePanelsList.filter((element) => element.id != id)
-        console.log("Removing element " + id + " from visible panels list")
-        console.log(visiblePanelsList)
-        setVisiblePanelsList(newlist)
-    }
+    const removeFromVisibles = useCallback((id) => {
+        visiblePanelsListRef.current = visiblePanelsListRef.current.filter(
+            (element) => element.id != id
+        );
+        setUpdateTrigger(prev => prev + 1);
+    }, []);
 
-    const addToVisibles = (id, fixed) => {
+    const addToVisibles = useCallback((id, fixed) => {
         if (fixed && panelsOrder.length > 0) {
             const unSortedVisiblePanelsList = [
-                ...visiblePanelsList.filter((element) => element.id != id),
+                ...visiblePanelsListRef.current.filter((element) => element.id != id),
                 ...panelsList.filter((element) => element.id == id),
-            ]
-            const sortedVisiblePanelsList = [
-                ...panelsOrder.reduce((acc, panel) => {
-                    const paneldesc = unSortedVisiblePanelsList.filter(
-                        (p) => p.settingid == panel.id
-                    )
-                    if (paneldesc.length > 0) acc.push(...paneldesc)
-                    return acc
-                }, []),
-            ]
-            setVisiblePanelsList([...sortedVisiblePanelsList])
+            ];
+            visiblePanelsListRef.current = panelsOrder.reduce((acc, panel) => {
+                const paneldesc = unSortedVisiblePanelsList.filter(
+                    (p) => p.settingid == panel.id
+                );
+                if (paneldesc.length > 0) acc.push(...paneldesc);
+                return acc;
+            }, []);
         } else {
-            setVisiblePanelsList([
+            visiblePanelsListRef.current = [
                 ...panelsList.filter((element) => element.id == id),
-                ...visiblePanelsList.filter((element) => element.id != id),
-            ])
+                ...visiblePanelsListRef.current.filter((element) => element.id != id),
+            ];
         }
-    }
+        setUpdateTrigger(prev => prev + 1);
+    }, [panelsList, panelsOrder]);
+
+    const isPanelVisible = useCallback((id) => {
+        return visiblePanelsListRef.current.some((element) => element.id == id);
+    }, []);
 
     const addToast = (newToast) => {
         const id = generateUID()
@@ -328,9 +331,6 @@ const UiContextProvider = ({ children }) => {
         play(seq)
     }
 
-    const isPanelVisible = (id) => {
-        return visiblePanelsList.findIndex((element) => element.id == id) > -1
-    }
 
     useUiContextFn.toasts = { addToast, removeToast, toastList: toasts }
     useUiContextFn.panels = { hide: removeFromVisibles,isVisible: isPanelVisible }
@@ -345,13 +345,18 @@ const UiContextProvider = ({ children }) => {
         panels: {
             list: panelsList,
             set: setPanelsList,
-            visibles: visiblePanelsList,
-            setVisibles: setVisiblePanelsList,
+            visibles: visiblePanelsListRef.current,
+            setVisibles: (newList) => {
+                visiblePanelsListRef.current = newList;
+                setUpdateTrigger(prev => prev + 1);
+            },
             hide: removeFromVisibles,
             show: addToVisibles,
+            isVisible: isPanelVisible,
             initDone: initPanelsVisibles,
             setInitDone: setInitPanelsVisibles,
             setPanelsOrder: setPanelsOrder,
+            updateTrigger: updateTrigger,
         },
         shortcuts: {
             enabled: isKeyboardEnabled,

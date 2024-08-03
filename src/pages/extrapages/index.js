@@ -23,6 +23,7 @@ import {ExtraContent} from "../../components/ExtraContent"
 const ExtraPage = ({ id, source, refreshtime, label, type }) => {
     return (
         <ExtraContent
+            key={id}
             id={id}
             label={label}
             source={source}
