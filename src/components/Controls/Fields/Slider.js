@@ -26,8 +26,7 @@ import {
 } from "../../../contexts"
 import {
     generateDependIds,
-    connectionDepend,
-    settingsDepend,
+    checkDependencies
 } from "../../Helpers"
 import Input from "./Input"
 
@@ -62,12 +61,10 @@ const Slider = ({
         depend,
         interfaceSettings.current.settings
     )
-    const canshow = connectionDepend(depend, connectionSettings.current)
+
 
     useEffect(() => {
-        let visible =
-            canshow &&
-            settingsDepend(depend, interfaceSettings.current.settings)
+        let visible = checkDependencies(depend, interfaceSettings.current.settings, connectionSettings.current)
         if (document.getElementById(id))
             document.getElementById(id).style.display = visible
                 ? "block"

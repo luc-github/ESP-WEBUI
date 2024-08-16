@@ -27,7 +27,7 @@ import {
     getColClasses,
     generateDependIds,
     connectionDepend,
-    settingsDepend,
+    checkDependencies,
 } from "./components"
 import {
     beautifyJSONString,
@@ -73,7 +73,7 @@ export {
     getColClasses,
     generateDependIds,
     connectionDepend,
-    settingsDepend,
+    checkDependencies,
     getCookie,
     hslToHex,
     isLimitedEnvironment,

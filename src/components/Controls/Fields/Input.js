@@ -38,8 +38,7 @@ import {
 } from "../../../contexts"
 import {
     generateDependIds,
-    connectionDepend,
-    settingsDepend,
+    checkDependencies,
 } from "../../Helpers"
 
 const Reveal = ({ applyTo }) => {
@@ -105,7 +104,6 @@ const Input = ({
         depend,
         interfaceSettings.current.settings
     )
-    const canshow = connectionDepend(depend, connectionSettings.current)
     const { step } = rest
     const inputref = useRef()
     const appendtooltip = prec ? "tooltip tooltip-left" : ""
@@ -155,9 +153,7 @@ const Input = ({
     }
 
     useEffect(() => {
-        let visible =
-            canshow &&
-            settingsDepend(depend, interfaceSettings.current.settings)
+        let visible =checkDependencies(depend, interfaceSettings.current.settings, connectionSettings.current)
         if (document.getElementById(id))
             document.getElementById(id).style.display = visible
                 ? "block"

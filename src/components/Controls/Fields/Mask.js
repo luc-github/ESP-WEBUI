@@ -28,8 +28,7 @@ import {
 } from "../../../contexts"
 import {
     generateDependIds,
-    connectionDepend,
-    settingsDepend,
+    checkDependencies,
     BitsArray,
 } from "../../Helpers"
 
@@ -59,7 +58,6 @@ const Mask = ({
         depend,
         interfaceSettings.current.settings
     )
-    const canshow = connectionDepend(depend, connectionSettings.current)
     function getSize(optionsArray) {
         let size = 0
         if (optionsArray.length > 0) {
@@ -73,9 +71,7 @@ const Mask = ({
     let maskSize = getSize(options)
 
     useEffect(() => {
-        let visible =
-            canshow &&
-            settingsDepend(depend, interfaceSettings.current.settings)
+        let visible = checkDependencies(depend, interfaceSettings.current.settings, connectionSettings.current)
         if (document.getElementById(id))
             document.getElementById(id).style.display = visible
                 ? "block"

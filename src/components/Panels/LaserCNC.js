@@ -24,7 +24,7 @@ import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList, eventsList } from "../../targets"
 import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
 import { useHttpFn } from "../../hooks"
-import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
+import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
 /*
  * Local const

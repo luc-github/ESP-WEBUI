@@ -107,40 +107,24 @@ const generateDependIds = (depend, settings) => {
 }
 
 //this won't change as it is initalised with [ESP800] which is call at start
-const connectionDepend = (depend, settings) => {
+const connectionDepend = (depend, connectionsettings) => {
     if (Array.isArray(depend)) {
-        return depend.reduce((acc, d) => {
-            if (d.connection_id && settings[d.connection_id]) {
-                const quote = d.value && d.value.trim().endsWith("'") ? "'" : ""
-                if (d.value)
-                    return (
-                        acc &&
-                        eval(
-                            quote + settings[d.connection_id] + quote + d.value
-                        )
-                    )
-                else if (d.contains) {
-                    return (
-                        acc &&
-                        eval(
-                            "'" +
-                                settings[d.connection_id] +
-                                "'" +
-                                ".indexOf('" +
-                                d.contains +
-                                "')!=-1"
-                        )
-                    )
+        return depend.every(d => {
+            if (d.connection_id && connectionsettings[d.connection_id]) {
+                const quote = d.value && d.value.trim().endsWith("'") ? "'" : "";
+                if (d.value) {
+                    return eval(quote + connectionsettings[d.connection_id] + quote + d.value);
+                } else if (d.contains) {
+                    return eval("'" + connectionsettings[d.connection_id] + "'" + ".indexOf('" + d.contains + "')!=-1");
                 }
             }
-            return acc
-        }, true)
+            return true;
+        });
     }
-    return true
+    return true;
 }
-
 //this is dynamic as it is depending on the preferences settings
-const settingsDepend = (depend, settings) => {
+const settingDepend = (depend, settings, connectionsettings) => {
     if (Array.isArray(depend)) {
         return depend.every(d => {
             if (d.id) {
@@ -153,7 +137,27 @@ const settingsDepend = (depend, settings) => {
             }
             if (d.orGroups) {
                 return d.orGroups.some(group => 
-                    settingsDepend(group, settings)
+                    checkDependencies(group, settings, connectionsettings)
+                );
+            }
+            return true;
+        });
+    }
+    return true;
+}
+
+const checkDependencies = (depend, settings, connectionsettings) => {
+    if (Array.isArray(depend)) {
+        return depend.every(d => {
+            if (d.id) {
+                return settingDepend([d], settings, connectionsettings);
+            }
+            if (d.connection_id) {
+                return connectionDepend([d], connectionsettings);
+            }
+            if (d.orGroups) {
+                return d.orGroups.some(group => 
+                    checkDependencies(group, settings, connectionsettings)
                 );
             }
             return true;
@@ -170,5 +174,5 @@ export {
     getColClasses,
     generateDependIds,
     connectionDepend,
-    settingsDepend,
+    checkDependencies
 }

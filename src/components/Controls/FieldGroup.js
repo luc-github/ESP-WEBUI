@@ -23,11 +23,11 @@ import {
     useUiContextFn,
     useSettingsContext,
 } from "../../contexts"
-import { generateDependIds, connectionDepend, settingsDepend } from "../Helpers"
+import { generateDependIds, checkDependencies } from "../Helpers"
 
 const FieldGroup = ({ className, children, label, id, depend }) => {
-    const { connectionSettings } = useSettingsContext()
-    const canshow = connectionDepend(depend, connectionSettings.current)
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
+    const canshow = checkDependencies(depend,interfaceSettings.current.settings ,connectionSettings.current)
     if (!canshow) {
         return null
     }

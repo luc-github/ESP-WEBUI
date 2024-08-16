@@ -164,6 +164,10 @@
                     {
                         "id": "showfilespanel",
                         "value": true
+                    },
+                    {
+                        "connection_id": "SDConnection",
+                        "value": "=='direct'"
                     }
                 ],
                 "value": [
@@ -353,12 +357,29 @@
                 "label": "P101",
                 "depend": [
                     {
-                        "id": "sd",
-                        "value": true
-                    },
-                    {
-                        "connection_id": "SDConnection",
-                        "value": "!='direct'"
+                        "orGroups": [
+                                        [
+                                            {
+                                            "id": "sdext",
+                                            "value": true
+                                            },
+                                            {
+                                                "connection_id": "SDConnection",
+                                                "value": "=='direct'"
+                                            }
+                                        ],
+                                        [
+                                            {
+                                            "id": "sd",
+                                            "value": true
+                                            },
+                                            {
+                                                "connection_id": "SDConnection",
+                                                "value": "!='direct'"
+                                            }
+                                        ]
+                                    ]
+                                    
                     }
                 ],
                 "value": [

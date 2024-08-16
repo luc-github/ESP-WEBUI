@@ -23,19 +23,18 @@ import { useSettingsContext, useUiContextFn } from "../../../contexts"
 import { T } from "../../Translations"
 import {
     generateDependIds,
-    connectionDepend,
-    settingsDepend,
+    checkDependencies
 } from "../../Helpers"
 
 const Option = ({ label, depend, ...props }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
     if (depend) {
-        const canshow = connectionDepend(depend, connectionSettings.current)
-        const canshow2 = settingsDepend(
+        const canshow = checkDependencies(
             depend,
-            interfaceSettings.current.settings
+            interfaceSettings.current.settings,
+            connectionSettings.current
         )
-        if (!canshow || !canshow2) return null
+        if (!canshow) return null
     }
     //Condition for camera - no need to display if none setup
     if (props.value == "camera") {
@@ -78,7 +77,6 @@ const Select = ({
     const optionList = options.map((option) => {
         return <Option {...option} />
     })
-    const canshow = connectionDepend(depend, connectionSettings.current)
     options.map((option) => {
         if (option.depend) {
             const deps = generateDependIds(
@@ -89,9 +87,7 @@ const Select = ({
         }
     })
     useEffect(() => {
-        let visible =
-            canshow &&
-            settingsDepend(depend, interfaceSettings.current.settings)
+        let visible = checkDependencies(depend, interfaceSettings.current.settings, connectionSettings.current)
         if (document.getElementById(id))
             document.getElementById(id).style.display = visible
                 ? "block"

@@ -28,7 +28,7 @@ import {
 import { useTargetContext, variablesList, eventsList } from "../../targets"
 import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
 import { useHttpFn } from "../../hooks"
-import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
+import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
 /*
  * Local const
@@ -47,7 +47,7 @@ const spindleSpeedValue = {}
 
 const SpindleControls = () => {
     const { states } = useTargetContext()
-    const { interfaceSettings } = useSettingsContext()
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
     //Add callback to reset event
     eventsList.on("reset", onReset)
     if (!useUiContextFn.getValue("showspindlepanel")) return null
@@ -72,9 +72,10 @@ const SpindleControls = () => {
                             if (states[element.id]) {
                                 if (element.depend) {
                                     if (
-                                        !settingsDepend(
+                                        !checkDependencies(
                                             element.depend,
-                                            interfaceSettings.current.settings
+                                            interfaceSettings.current.settings,
+                                            connectionSettings.current
                                         )
                                     )
                                         return null
@@ -103,7 +104,7 @@ const SpindleControls = () => {
 
 const SpindlePanel = () => {
     const { toasts } = useUiContext()
-    const { interfaceSettings } = useSettingsContext()
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
     const { status, states } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "SpindlePanel"
@@ -271,9 +272,10 @@ const SpindlePanel = () => {
                 {buttons_list.map((item) => {
                     if (item.depend) {
                         if (
-                            !settingsDepend(
+                            !checkDependencies(
                                 item.depend,
-                                interfaceSettings.current.settings
+                                interfaceSettings.current.settings,
+                                connectionSettings.current
                             )
                         )
                             return null
@@ -281,9 +283,10 @@ const SpindlePanel = () => {
                     const content = item.buttons.map((button, index) => {
                         if (button.depend) {
                             if (
-                                !settingsDepend(
+                                !checkDependencies(
                                     button.depend,
-                                    interfaceSettings.current.settings
+                                    interfaceSettings.current.settings,
+                                    connectionSettings.current
                                 )
                             )
                                 return null

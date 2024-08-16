@@ -29,8 +29,7 @@ import { ButtonImg, Loading } from "../../components/Controls"
 import { useHttpQueue, useSettings } from "../../hooks"
 import {
     espHttpURL,
-    connectionDepend,
-    settingsDepend,
+    checkDependencies,
 } from "../../components/Helpers"
 import { T } from "../../components/Translations"
 import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather"
@@ -39,8 +38,8 @@ import { exportPreferences, exportPreferencesSection } from "./exportHelper"
 import { importPreferencesSection, formatPreferences } from "./importHelper"
 
 const isDependenciesMet = (depend) => {
-    const { interfaceSettings } = useSettingsContext()
-    return settingsDepend(depend, interfaceSettings.current.settings)
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
+    return checkDependencies(depend, interfaceSettings.current.settings, connectionSettings.current)
 }
 
 const generateValidationGlobal = (
@@ -190,22 +189,13 @@ const generateValidationGlobal = (
                 (element) => element.value == fieldData.value
             )
             if (opt && opt.depend) {
-                if (connectionSettings) {
-                    const canshow = connectionDepend(
+                if (interfaceSettings && connectionSettings) {
+                    const canshow = checkDependencies(
                         opt.depend,
+                        interfaceSettings.current.settings,
                         connectionSettings.current
                     )
                     if (!canshow) {
-                        validation.valid = false
-                        console.log("Error")
-                    }
-                }
-                if (interfaceSettings) {
-                    const canshow2 = settingsDepend(
-                        opt.depend,
-                        interfaceSettings.current.settings
-                    )
-                    if (!canshow2) {
                         validation.valid = false
                         console.log("Error")
                     }
