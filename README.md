@@ -39,7 +39,7 @@ The result is a monolitic file with a minimal size allowing almost full control 
 ## Sponsors 
 [<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/2.1/images/sponsors-supporters/MKS/mksmakerbase.jpg" title="MKS Makerbase">](https://github.com/makerbase-mks)&nbsp;&nbsp;
 [<img width="170px" src="https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/2.1/images/sponsors-supporters/anolex/anolex_logo_github.png" title="Anolex">](https://anolexcnc.com/)&nbsp;&nbsp;
-[<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/2.1/images/sponsors-supporters/PiBot/logo2222.png" title="PiBot">](https://www.pibot.com/)&nbsp;&nbsp;
+[<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/2.1/images/sponsors-supporters/PiBot/pibot.png" title="PiBot">](https://www.pibot.com/)&nbsp;&nbsp;
 
 ## Supporters
 
