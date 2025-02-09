@@ -41,7 +41,7 @@ import { Eye as WebUILogo } from "preact-feather"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "GRBL"
-const webUIbuild = "G2"
+const webUIbuild = "G3"
 const Name = "ESP3D"
 const fwUrl = [
     "https://github.com/luc-github/ESP3D/tree/3.0",
