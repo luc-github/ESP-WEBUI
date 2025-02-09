@@ -299,6 +299,7 @@ const commandsQuery = (req, res, SendWS) => {
                 "$133=300.000\n" +
                 "$134=300.000\n" +
                 "$135=300.000\n" +
+                "$337=\n" +
                 "ok\n"
         )
         res.send("")

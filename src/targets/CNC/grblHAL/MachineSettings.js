@@ -143,7 +143,10 @@ const MachineSettings = () => {
             } else {
                 fieldData.hasmodified = true
             }
-            if (fieldData.value.trim().length == 0) validation.valid = false
+            //$337  is optionnal setting, so it can be empty
+            if (fieldData.value.trim().length == 0 && fieldData.cmd != "$337"){
+                 validation.valid = false
+            }
         }
         if (!validation.valid) {
             validation.message = T("S42")
