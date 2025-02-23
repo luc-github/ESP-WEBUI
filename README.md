@@ -1,4 +1,4 @@
-# ESP3D-WEBUI [<img src="https://img.shields.io/liberapay/patrons/ESP3D.svg?logo=liberapay">](https://liberapay.com/ESP3D)
+# ESP3D-WEBUI
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -37,24 +37,57 @@ So I came with a full rewrite using pure javascript and resized resources:
 The result is a monolitic file with a minimal size allowing almost full control of ESP3D board and your 3D printer
 
 ## Sponsors 
-[<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/2.1/images/sponsors-supporters/MKS/mksmakerbase.jpg" title="MKS Makerbase">](https://github.com/makerbase-mks)&nbsp;&nbsp;
-[<img width="170px" src="https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/2.1/images/sponsors-supporters/anolex/anolex_logo_github.png" title="Anolex">](https://anolexcnc.com/)&nbsp;&nbsp;
-[<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/2.1/images/sponsors-supporters/PiBot/pibot.png" title="PiBot">](https://www.pibot.com/)&nbsp;&nbsp;
-
-## Supporters
-
-
-## Become a sponsor or a supporter
- * A sponsor is a recurent donator    
-If your tier is `10 US$/month` or more, to thank you for your support, your logo / avatar will be added to the readme page with eventually with a link to your site.    
- * A supporter is per time donator 
- If your donation is over `120 US$` per year, to thank you for your support, your logo / avatar will be added to the readme page with eventually with a link to your site.  
-
- Every support is welcome, indeed helping users / developing new features need time and devices, donations contribute a lot to make things happen, thank you.
-
-* liberapay <a href="https://liberapay.com/ESP3D/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a> 
-* Paypal [<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif" border="0" alt="PayPal – The safer, easier way to pay online.">](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FQL59C749A78L)
-* ko-fi [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G0C0QT7)
+<div align="center">
+    <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-0.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-1.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-2.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-3.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-4.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-5.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-6.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-7.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-8.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-9.svg" style="max-width:400px; width:auto; height:auto">
+    </div>
+ <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-0.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-1.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-2.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-3.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-4.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-5.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-6.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-7.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-8.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-9.svg" style="max-width:400px; width:auto; height:auto">
+    </div>
+ <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-0.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-1.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-2.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-3.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-4.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-5.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-6.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-7.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-8.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-9.svg" style="max-width:400px; width:auto; height:auto">
+    </div>
+<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-0.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-1.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-2.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-3.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-4.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-5.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-6.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-7.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-8.svg" style="max-width:400px; width:auto; height:auto">
+        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-9.svg" style="max-width:400px; width:auto; height:auto">
+    </div>
+ Support ESP3D Development - <a href="https://esp3d.io/sponsors">Become a Sponsor</a>
+</div>
 
 ## Features
 - It supports several firmwares based on Repetier, Marlin, Smoothieware and GRBL.
@@ -66,51 +99,16 @@ If your tier is `10 US$/month` or more, to thank you for your support, your logo
 - It allows to update the ESP3D by uploading the FW
 - it allows to control and monitor your 3D printer in every aspect (position, temperature, print, SD card content, custom command
 
-Please look at screenshots:
-Main tab and menu:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Full1.PNG'/>   
-Control panel:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/controls.PNG'/>  
-Macro dialog:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Macro.PNG'/>   
-Temperatures panel:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/temperatures.PNG'/>   
-Extruder panel:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/esxtruders.PNG'/>  
-SD card panel:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD1.PNG'/>  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD1.5.PNG'/>   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD2.PNG'/>  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD-Dir.PNG'/>  
-Camera Tab:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Camera.PNG'/>  
-Repetier EEPROM Editor tab:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Repetier.PNG'/>  
-Smoothieware config Editor tab:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/smoothieware.PNG'/>  
-Marlin config Editor tab:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Marlin.PNG'/>  
-GRBL config Editor tab: 
-<img src='https://user-images.githubusercontent.com/8822552/37540735-60bada08-2958-11e8-92ee-69aee4b83e7a.png'/> 
-ESP3D settings Editor:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/ESP3D1.PNG'/>  
-ESP3D Status:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/status.PNG'/>   
-ESP3D SPIFFS:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SPIFFS.PNG'/>   
-
+Please look at screenshots: https://esp3d.io/ESP3D-WebUI/Version_2.X/showcase/
 
 ## Installation
-Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/2.1.x) and copy the index.html.gz file on root of SPIFFS, in theory ESP3D have a version of web-ui but it may not be the latest one
+Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/2.1.x) and follow the installation process : https://esp3d.io/ESP3D-WebUI/Version_2.X/installation
 
 ## Contribution / development
-Check wiki section [Contribution/Development](https://github.com/luc-github/ESP3D-WEBUI/wiki/Compilation---Development)
+Check: https://esp3d.io/ESP3D-WebUI/Version_2.X/documentation/compilation/
 
 ## Issues / Questions
 You can submit ticket [here](https://github.com/luc-github/ESP3D-WEBUI/issues) or open discussion if it is not an issue [here](https://github.com/luc-github/ESP3D-WEBUI/discussions) or Join the chat at [![Discord server](https://img.shields.io/discord/752822148795596940?color=blue&label=discord&logo=discord)](https://discord.gg/Z4ujTwE)   
-
-
- 
 
 ## Contributors ✨
 
