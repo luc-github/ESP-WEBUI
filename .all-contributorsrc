@@ -304,6 +304,16 @@
       "contributions": [
         "financial"
       ]
+    },
+    {
+      "login": "abcpibot",
+      "name": "abcpibot",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5948988?v=4",
+      "profile": "https://github.com/abcpibot",
+      "contributions": [
+        "financial",
+        "platform"
+      ]
     }
   ],
   "contributorsPerLine": 7,
