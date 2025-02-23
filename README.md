@@ -38,55 +38,55 @@ The result is a monolitic file with a minimal size allowing almost full control 
 
 ## Sponsors 
 <div align="center">
-    <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-0.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-1.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-2.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-3.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-4.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-5.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-6.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-7.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-8.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/diamond-9.svg" style="max-width:400px; width:auto; height:auto">
-    </div>
- <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-0.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-1.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-2.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-3.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-4.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-5.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-6.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-7.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-8.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/platinum-9.svg" style="max-width:400px; width:auto; height:auto">
-    </div>
- <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-0.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-1.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-2.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-3.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-4.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-5.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-6.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-7.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-8.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/gold-9.svg" style="max-width:400px; width:auto; height:auto">
-    </div>
-<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-0.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-1.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-2.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-3.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-4.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-5.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-6.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-7.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-8.svg" style="max-width:400px; width:auto; height:auto">
-        <img src="https://raw.githubusercontent.com/luc-github/luc-github/main/sponsors/esp3d-webui/silver-9.svg" style="max-width:400px; width:auto; height:auto">
-    </div>
- Support ESP3D Development - <a href="https://esp3d.io/sponsors">Become a Sponsor</a>
+   <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-0.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-0.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-1.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-1.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-2.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-2.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-3.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-3.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-4.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-4.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-5.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-5.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-6.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-6.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-7.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-7.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-8.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-8.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-9.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-9.svg" style="max-width:400px; width:auto; height:auto"></a>
+   </div>
+   <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-0.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-0.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-1.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-1.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-2.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-2.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-3.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-3.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-4.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-4.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-5.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-5.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-6.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-6.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-7.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-7.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-8.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-8.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-9.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-9.svg" style="max-width:400px; width:auto; height:auto"></a>
+   </div>
+   <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-0.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-0.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-1.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-1.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-2.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-2.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-3.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-3.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-4.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-4.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-5.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-5.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-6.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-6.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-7.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-7.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-8.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-8.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-9.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-9.svg" style="max-width:400px; width:auto; height:auto"></a>
+   </div>
+   <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-0.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-0.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-1.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-1.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-2.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-2.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-3.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-3.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-4.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-4.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-5.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-5.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-6.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-6.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-7.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-7.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-8.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-8.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/silver-9.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/silver-9.svg" style="max-width:400px; width:auto; height:auto"></a>
+   </div>
+   Support ESP3D Development - <a href="https://esp3d.io/sponsors" target="_blank" rel="noopener noreferrer">Become a Sponsor</a>
 </div>
 
 ## Features
