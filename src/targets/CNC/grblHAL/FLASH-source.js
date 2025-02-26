@@ -1,5 +1,5 @@
 /*
- DIRECTSD-source.js - ESP3D WebUI Target file
+ FLASH-source.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -20,8 +20,7 @@
 import { h } from "preact"
 import { sortedFilesList, formatStatus } from "../../../components/Helpers"
 import { canProcessFile } from "../../helpers"
-import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
-
+import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
 const capabilities = {
     Process: (path, filename) => {
         return canProcessFile(filename)
@@ -55,22 +54,25 @@ const commands = {
     list: (path, filename) => {
         return {
             type: "url",
-            url: "sdfiles",
+            url: "files",
             args: { path, action: "list" },
         }
     },
     upload: (path, filename) => {
+        const upath = (
+            useSettingsContextFn.getValue("HostUploadPath") + path
+        ).replaceAll("//", "/")
         return {
             type: "url",
-            url: "sdfiles",
-            args: { path },
+            url: "files",
+            args: { path: upath },
         }
     },
     formatResult: (resultTxT) => {
         const res = JSON.parse(resultTxT)
-        if (useUiContextFn.getValue("sort_directsd_files")){
+        if (useUiContextFn.getValue("sort_flashfs_files")){
             res.files = sortedFilesList(res.files)
-        }
+        } 
         res.status = formatStatus(res.status)
         return res
     },
@@ -78,28 +80,35 @@ const commands = {
     deletedir: (path, filename) => {
         return {
             type: "url",
-            url: "sdfiles",
+            url: "files",
             args: { path, action: "deletedir", filename },
         }
     },
     delete: (path, filename) => {
         return {
             type: "url",
-            url: "sdfiles",
+            url: "files",
             args: { path, action: "delete", filename },
         }
     },
     createdir: (path, filename) => {
         return {
             type: "url",
-            url: "sdfiles",
+            url: "files",
             args: { path, action: "createdir", filename },
         }
     },
     download: (path, filename) => {
+        const upath = (
+            useSettingsContextFn.getValue("HostUploadPath") +
+            path +
+            (path == "/" ? "" : "/") +
+            filename
+        ).replaceAll("//", "/")
+        //console.log('Upath:', upath)
         return {
             type: "url",
-            url: path + (path.endsWith("/") ? "" : "/") + filename,
+            url: upath,
             args: {},
         }
     },
@@ -119,6 +128,6 @@ const commands = {
     },
 }
 
-const DIRECTSD = { capabilities, commands }
+const FLASH = { capabilities, commands }
 
-export { DIRECTSD }
+export { FLASH }
